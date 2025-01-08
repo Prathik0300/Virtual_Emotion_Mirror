@@ -31,11 +31,29 @@ const theme = createTheme({
     secondary: {
       main: "#fff8e6",
     },
+    error: {
+      main: "#f44336",
+    },
     text: {
       primary: "#fb8b24",
     },
   },
   components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiInputLabel-root.Mui-error": {
+            color: "#f44336",
+          },
+          "& .MuiOutlinedInput-root.Mui-error": {
+            borderColor: "#f44336",
+          },
+          "& .MuiFormHelperText-root.Mui-error": {
+            color: "#f44336",
+          },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

@@ -9,6 +9,7 @@ export const signupForm = css`
   background-color: var(--primary-accent);
   color: var(--secondary-accent);
   width: fit-content;
+  max-width: 335px;
   height: fit-content;
   gap: 20px;
   padding: 30px;
@@ -77,4 +78,18 @@ export const loginLink = css`
   margin: 0 2px;
   font-weight: 600;
   text-decoration: underline;
+`;
+
+export const divider = css`
+  width: 100%;
+  border: none;
+  border-top: 1.5px solid var(--secondary-accent-light);
+`;
+
+export const privacyPolicyContainer = css`
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 `;

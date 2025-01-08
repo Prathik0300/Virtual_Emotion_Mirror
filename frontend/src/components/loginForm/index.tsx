@@ -13,12 +13,14 @@ import {
   createAccountContainer,
   createAccountLink,
 } from "./style";
-import { Button, FormControl, InputAdornment, TextField } from "@mui/material";
+import { Button, FormControl, InputAdornment } from "@mui/material";
 import Link from "next/link";
 
 import { useOAuthValidation } from "@/src/hooks/useOAuthValidation";
 import Image from "next/image";
 import { usePasswordVisibility } from "@/src/hooks/modules/login/usePasswordVisibility";
+import { EmailTextField, PasswordTextField } from "../Textfield";
+import { useForm } from "@/src/hooks/useForm";
 
 const LoginForm = () => {
   const { login, GoogleOneTap } = useOAuthValidation();
@@ -27,6 +29,7 @@ const LoginForm = () => {
     togglePasswordVisibility,
     PasswordVisibilityIcon,
   } = usePasswordVisibility();
+  const { email, password, error, handleOnChange, validateInput } = useForm();
 
   return (
     <div className={loginForm}>
@@ -36,17 +39,24 @@ const LoginForm = () => {
           <p className={subtext}>Please enter your email and password</p>
         </div>
         <FormControl className={formControl}>
-          <TextField
+          <EmailTextField
             className={textfield}
             variant="outlined"
             type="email"
+            error={error.email.status}
+            helperText={error.email.msg}
             placeholder="someone@example.com"
+            value={email}
+            onBlur={validateInput("email")}
+            onChange={(e) => handleOnChange(e, "email")}
           />
-          <TextField
+          <PasswordTextField
             className={textfield}
             variant="outlined"
             type={isPasswordVisible ? "text" : "password"}
             placeholder="Password"
+            onChange={(e) => handleOnChange(e, "password")}
+            value={password}
             InputProps={{
               endAdornment: (
                 <InputAdornment
