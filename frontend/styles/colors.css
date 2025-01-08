@@ -2,5 +2,7 @@
   --white: #ffffff;
   --black: #000000;
   --primary: #8d0b41;
-  --primary-font: #fff8e6;
+  --primary-accent: #fff8e6;
+  --secondary-accent: #fb8b24;
+  --secondary-accent-light: rgba(251, 139, 36,0.5)
 }

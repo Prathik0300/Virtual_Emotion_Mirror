@@ -7,6 +7,9 @@ export const getLocalStorageData = (key: string) => {
 };
 
 export const setLocalStorageData = (key: string, value: string) => {
+  if (typeof value === "object") {
+    return localStorage.setItem(key, JSON.stringify(value));
+  }
   return localStorage.setItem(key, value);
 };
 
