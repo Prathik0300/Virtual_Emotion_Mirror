@@ -6,7 +6,10 @@ export const getLocalStorageData = (key: string) => {
   }
 };
 
-export const setLocalStorageData = (key: string, value: string) => {
+export const setLocalStorageData = (
+  key: string,
+  value: string | Record<string, any>
+) => {
   if (typeof value === "object") {
     return localStorage.setItem(key, JSON.stringify(value));
   }

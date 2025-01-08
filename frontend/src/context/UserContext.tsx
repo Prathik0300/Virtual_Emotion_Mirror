@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import {
   getLocalStorageData,
   removeLocalStorageData,
@@ -13,7 +13,6 @@ export const UserContextUpdater = createContext({});
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [userProfile, setUserProfile] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  console.log({ isLoggedIn, userProfile });
   
   // Check Cookie Data
   const access_token = useState(() => {

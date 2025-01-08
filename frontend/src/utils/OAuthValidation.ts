@@ -8,7 +8,6 @@ export const OAuthValidate = async (user: any) => {
   if (isEmptyData(user)) return new Error("User data not available!");
 
   try {
-    console.log(">> : ", user.access_token);
     return await axios.get(
       `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
       {

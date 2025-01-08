@@ -20,7 +20,6 @@ export const useForm = () => {
     password: { status: false, msg: "" },
     confirmPassword: { status: false, msg: "" },
   });
-  console.log({ error });
 
   const validateInput = (fieldId: string) => {
     return () => {
@@ -70,7 +69,6 @@ export const useForm = () => {
   };
 
   const debounceUpdateForm = debounce((value: string, fieldId: string) => {
-    console.log({ value });
     if (isEmptyData(fieldId)) return;
 
     if (fieldId === "firstName") setFirstName(value);

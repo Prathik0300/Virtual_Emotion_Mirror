@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   const isAccessingProtectedUrl = PROTECTED_ROUTES.includes(
     request.nextUrl.pathname
   );
-  console.log({ access_token, isAccessingProtectedUrl, s: request.nextUrl });
+
   if (!access_token && isAccessingProtectedUrl) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
