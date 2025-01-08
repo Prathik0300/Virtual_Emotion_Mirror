@@ -6,7 +6,6 @@ const LoginPage = () => {
   return (
     <>
       <Login />
-
       <LottieApp
         animationData={background}
         style={{

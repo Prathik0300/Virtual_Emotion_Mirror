@@ -4,9 +4,14 @@ import { useState } from "react";
 
 export const usePasswordVisibility = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible((prev) => !prev);
+  const togglePasswordVisibility = (isConfirmPassword = false) => {
+    return () => {
+      if (isConfirmPassword) setIsConfirmPasswordVisible((prev) => !prev);
+      else setIsPasswordVisible((prev) => !prev);
+    };
   };
 
   const PasswordVisibilityIcon = ({
@@ -23,5 +28,6 @@ export const usePasswordVisibility = () => {
     isPasswordVisible,
     togglePasswordVisibility,
     PasswordVisibilityIcon,
+    isConfirmPasswordVisible,
   };
 };

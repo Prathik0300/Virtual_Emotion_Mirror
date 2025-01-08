@@ -51,7 +51,7 @@ const LoginForm = () => {
               endAdornment: (
                 <InputAdornment
                   position="end"
-                  onClick={togglePasswordVisibility}
+                  onClick={togglePasswordVisibility()}
                 >
                   <PasswordVisibilityIcon
                     isPasswordVisible={isPasswordVisible}
