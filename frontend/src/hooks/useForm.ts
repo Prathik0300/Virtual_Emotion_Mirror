@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { isEmptyData } from "../utils/commonUtils";
 import { debounce } from "lodash-es";
 import {
@@ -13,6 +13,7 @@ export const useForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isError, setIsError] = useState(false);
   const [error, setError] = useState({
     firstName: { status: false, msg: "" },
     lastName: { status: false, msg: "" },
@@ -20,6 +21,10 @@ export const useForm = () => {
     password: { status: false, msg: "" },
     confirmPassword: { status: false, msg: "" },
   });
+
+  useEffect(() => {
+    setIsError(Object.values(error).some((value) => value.status === true));
+  }, [error]);
 
   const validateInput = (fieldId: string) => {
     return () => {
@@ -89,6 +94,7 @@ export const useForm = () => {
     password,
     confirmPassword,
     error,
+    isError,
     handleOnChange,
     validateInput,
   };

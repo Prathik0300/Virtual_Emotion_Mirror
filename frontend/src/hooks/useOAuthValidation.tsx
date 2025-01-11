@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { OAuthValidate, setLoginData } from "../utils/OAuthValidation";
+import { OAuthValidate, setOAuthLoginData } from "../utils/OAuthValidation";
 import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useUserContext } from "./useContext/useUserContext";
@@ -57,7 +57,7 @@ export const useOAuthValidation = () => {
 
   useEffect(() => {
     if (!isEmptyData(userProfile)) {
-      setLoginData(userProfile);
+      setOAuthLoginData(userProfile);
     }
   }, [userProfile]);
 

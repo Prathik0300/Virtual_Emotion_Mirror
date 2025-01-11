@@ -18,7 +18,7 @@ import {
   NormalTextField,
   PasswordTextField,
 } from "@/src/components/Textfield";
-import { useForm } from "@/src/hooks/useForm";
+import { useSignup } from "@/src/hooks/modules/signup/useSignup";
 
 const Signup = () => {
   const {
@@ -27,7 +27,6 @@ const Signup = () => {
     togglePasswordVisibility,
     PasswordVisibilityIcon,
   } = usePasswordVisibility();
-
   const {
     email,
     firstName,
@@ -37,7 +36,9 @@ const Signup = () => {
     error,
     handleOnChange,
     validateInput,
-  } = useForm();
+    onSignup,
+  } = useSignup();
+
   return (
     <div className={signupForm}>
       <div className={textContainer}>
@@ -123,7 +124,12 @@ const Signup = () => {
             ),
           }}
         />
-        <Button variant="contained" type="submit" className={signupButton}>
+        <Button
+          variant="contained"
+          type="submit"
+          className={signupButton}
+          onClick={onSignup}
+        >
           Signup
         </Button>
       </FormControl>

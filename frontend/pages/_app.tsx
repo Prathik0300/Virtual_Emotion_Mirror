@@ -75,7 +75,7 @@ export default function App({
   pageProps,
   emotionCache = clientEmotionCache,
 }: MyAppProps) {
-  // useLogin();
+
   const [queryclient] = useState(
     () =>
       new QueryClient({
@@ -94,7 +94,11 @@ export default function App({
           <ThemeProvider theme={theme}>
             <AppContextProvider>
               <main className={rubik.className}>
-                <GoogleOAuthProvider clientId="772461416950-icmu53if8hqb4b0064dla76sft5m8724.apps.googleusercontent.com">
+                <GoogleOAuthProvider
+                  clientId={
+                    process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID || ""
+                  }
+                >
                   <Layout>
                     <>
                       <Component {...pageProps} />

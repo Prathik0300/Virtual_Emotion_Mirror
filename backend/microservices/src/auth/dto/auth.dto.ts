@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Exclude, Expose } from 'class-transformer';
 
 export class UserSignupDto {
   @IsString()
@@ -23,4 +24,19 @@ export class UserLoginDto {
   password: string;
 }
 
+export class UserAuthResponseDto {
+  @Expose()
+  success: boolean;
 
+  @Expose()
+  firstName: string;
+
+  @Expose()
+  lastName: string;
+
+  @Expose()
+  emailId: string;
+
+  @Exclude()
+  password: string;
+}

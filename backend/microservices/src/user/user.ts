@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/database/schemas/user.schema';
 import { Exception } from 'src/error/error.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserServices {
@@ -15,8 +16,13 @@ export class UserServices {
       .exec();
 
     if (!user) {
-      const newUser = new this.userModel(createUserDto);
-      return await newUser.save();
+      const passwordHash = await bcrypt.hash(createUserDto.password, 10);
+      const newUser = await new this.userModel({
+        ...createUserDto,
+        password: passwordHash,
+      });
+      await newUser.save();
+      return newUser.toObject();
     }
     throw new Exception(
       `User with email ${createUserDto.emailId} already exists!`,
@@ -37,7 +43,7 @@ export class UserServices {
   async getUser(emailId: string): Promise<User> {
     const user = await this.userModel.findOne({ emailId: emailId }).exec();
     if (user) {
-      return user;
+      return user.toObject();
     }
     throw new Exception(
       `User with email ${emailId} does not exist!`,

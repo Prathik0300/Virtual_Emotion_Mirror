@@ -20,7 +20,7 @@ import { useOAuthValidation } from "@/src/hooks/useOAuthValidation";
 import Image from "next/image";
 import { usePasswordVisibility } from "@/src/hooks/modules/login/usePasswordVisibility";
 import { EmailTextField, PasswordTextField } from "../Textfield";
-import { useForm } from "@/src/hooks/useForm";
+import { useLogin } from "@/src/hooks/modules/login/useLogin";
 
 const LoginForm = () => {
   const { login, GoogleOneTap } = useOAuthValidation();
@@ -29,7 +29,8 @@ const LoginForm = () => {
     togglePasswordVisibility,
     PasswordVisibilityIcon,
   } = usePasswordVisibility();
-  const { email, password, error, handleOnChange, validateInput } = useForm();
+  const { email, password, error, handleOnChange, validateInput, onLogin } =
+    useLogin();
 
   return (
     <div className={loginForm}>
@@ -73,7 +74,12 @@ const LoginForm = () => {
           <Link href="/" className={forgotPassword}>
             Forgot password
           </Link>
-          <Button variant="contained" type="submit" className={loginButton}>
+          <Button
+            variant="contained"
+            type="submit"
+            className={loginButton}
+            onClick={onLogin}
+          >
             Login
           </Button>
         </FormControl>
