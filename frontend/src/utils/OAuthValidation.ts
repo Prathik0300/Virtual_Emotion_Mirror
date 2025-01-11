@@ -24,6 +24,31 @@ export const OAuthValidate = async (user: any) => {
 
 export const setLoginData = (profile: any) => {
   setLocalStorageData(VEM_USER, {
+    email: profile["email"],
+    family_name: profile["lastName"],
+    given_name: profile["firstName"],
+    verified_email: profile["email"],
+    last_login: new Date(),
+    expires_in: 3600 * 1000,
+  });
+
+  setCookieData(
+    VEM_USER,
+    JSON.stringify({
+      last_login: new Date(),
+      expires_in: 3600 * 1000,
+    }),
+    {
+      expires: 30,
+      path: "",
+      sameSite: "Strict",
+      secure: true,
+    }
+  );
+};
+
+export const setOAuthLoginData = (profile: any) => {
+  setLocalStorageData(VEM_USER, {
     access_token: profile["access_token"],
     token_type: profile["token_type"],
     email: profile["email"],

@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export const isLoginDateExpired = (
   loggedInDate: Date,
   returningDate: Date,
@@ -25,3 +27,8 @@ export const isEmptyData = (dataStructure: any) => {
 
   return false;
 };
+
+export const getSuccessToast = (toastMsg: string) => toast.success(toastMsg);
+export const getErrorToast = (toastMsg: string) => toast.error(toastMsg);
+export const getWarningToast = (toastMsg: string) => toast.warning(toastMsg);
+export const getInfoToast = (toastMsg: string) => toast.info(toastMsg);
