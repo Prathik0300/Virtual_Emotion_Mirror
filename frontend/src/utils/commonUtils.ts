@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { PERMISSION_STATUS } from "../constants/enums";
 
 export const isLoginDateExpired = (
   loggedInDate: Date,
@@ -32,3 +33,24 @@ export const getSuccessToast = (toastMsg: string) => toast.success(toastMsg);
 export const getErrorToast = (toastMsg: string) => toast.error(toastMsg);
 export const getWarningToast = (toastMsg: string) => toast.warning(toastMsg);
 export const getInfoToast = (toastMsg: string) => toast.info(toastMsg);
+
+export const askForCameraPermission = async () => {
+  try {
+    const permissionStatus = await navigator.permissions.query({
+      name: "camera",
+    });
+
+    if (permissionStatus.state === PERMISSION_STATUS.GRANTED) {
+      console.log("permission granted");
+    } else if (permissionStatus.state === PERMISSION_STATUS.PROMPT) {
+      console.log("Prompting for camera permission!");
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      alert("Permission granted!");
+    } else if (permissionStatus.state === PERMISSION_STATUS.DENIED) {
+      console.warn("Camera Permission denied!");
+      alert("Camera access denied!");
+    }
+  } catch (err) {
+    console.log(`Error accessing the camera : ${err}`);
+  }
+};

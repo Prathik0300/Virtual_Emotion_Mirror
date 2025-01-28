@@ -10,12 +10,7 @@ export const layoutContainer = css`
 `;
 
 export const childContainer = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 100vw;
-  height: calc(100% - 170px);
+  max-width: 100%;
+  height: 100%;
   max-height: calc(100% - 170px);
-  overflow: hidden;
 `;

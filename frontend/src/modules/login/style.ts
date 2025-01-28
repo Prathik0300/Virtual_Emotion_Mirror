@@ -5,7 +5,8 @@ export const loginContainer = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
+
+  height: 100%;
   background-color: var(--primary-accent);
   width: fit-content;
   height: fit-content;
