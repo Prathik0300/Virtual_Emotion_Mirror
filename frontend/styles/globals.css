@@ -5,6 +5,7 @@ body {
   overflow-x: hidden;
   background-color: var(--primary);
   color: var(--primary-accent);
+  font-family: sans-serif;
 }
 
 body {

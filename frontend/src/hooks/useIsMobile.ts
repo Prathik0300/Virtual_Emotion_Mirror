@@ -1,15 +1,25 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import debounce from "lodash-es/debounce";
 
 const useIsMobile = (): boolean => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
 
-  useLayoutEffect(() => {
-    const updateSize = (): void => {
+  console.log({ w: window.innerWidth });
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const updateSize = debounce((): void => {
       setIsMobile(window.innerWidth < 768);
+    }, 100);
+    window.addEventListener("resize", updateSize);
+    return (): void => {
+      window.removeEventListener("resize", updateSize);
+      updateSize.cancel();
     };
-    window.addEventListener("resize", debounce(updateSize, 50));
-    return (): void => window.removeEventListener("resize", updateSize);
   }, []);
 
   return isMobile;

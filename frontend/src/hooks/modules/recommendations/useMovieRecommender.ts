@@ -15,7 +15,7 @@ export const useMovieRecommender = ({ genre }) => {
   } = useQuery({
     queryKey: [accessToken, genre],
     queryFn: async () => await getMovieRecommendation({ genre }),
-    enabled: !!accessToken && !!genre,
+    enabled: !!accessToken && !!genre && false,
   });
 
   useEffect(() => {

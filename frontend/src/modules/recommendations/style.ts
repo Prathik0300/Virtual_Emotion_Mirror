@@ -8,7 +8,7 @@ export const recommendationContainer = css`
   width: 100%;
   height: 100%;
   max-height: 100%;
-  gap: 25px;
+  gap: 10px;
   padding: 15px;
   height: max-content;
   background-color: var(--primary-accent);
