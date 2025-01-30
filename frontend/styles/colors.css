@@ -3,7 +3,8 @@
   --black: #000000;
   --primary: #8d0b41;
   --primary-accent: #fff8e6;
-  --secondary-accent: #fb8b24;
+  --secondary-accent: rgb(251, 139, 36);
   --secondary-accent-light: rgba(251, 139, 36, 0.5);
   --error: #f44336;
+  --light-tangerine: rgb(255, 232, 194);
 }

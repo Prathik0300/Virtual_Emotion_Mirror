@@ -2,7 +2,6 @@ import { mediaQueryMaxWidth } from "@/src/utils/mediaQueries";
 import { css } from "@emotion/css";
 
 export const footerContainer = css`
-  position: absolute;
   bottom: 15px;
   left: 10px;
   color: var(--primary-accent);

@@ -10,10 +10,16 @@ body {
 body {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.alignmentContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 * {

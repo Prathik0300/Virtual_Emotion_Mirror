@@ -13,11 +13,14 @@ export const UserContextUpdater = createContext({});
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [userProfile, setUserProfile] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+
   // Check Cookie Data
   const access_token = useState(() => {
     const token = getCookieData(ACCESS_TOKEN);
-    if (token) return token;
+    console.log({ token });
+    if (token) {
+      return token;
+    }
     return "";
   });
 
@@ -38,10 +41,11 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   const contextValues = useMemo(
     () => ({
+      accessToken: access_token[0],
       userProfile,
       isLoggedIn,
     }),
-    [userProfile, isLoggedIn]
+    [access_token, userProfile, isLoggedIn]
   );
 
   const contextUpdater = useMemo(

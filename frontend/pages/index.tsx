@@ -1,5 +1,7 @@
-const Home = () => {
-  return <>HELLO</>;
+import Home from "@/src/modules/home";
+
+const Main = () => {
+  return <Home />;
 };
 
-export default Home;
+export default Main;

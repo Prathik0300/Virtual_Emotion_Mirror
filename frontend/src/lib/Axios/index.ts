@@ -7,9 +7,12 @@ class Request {
   private axiosInstance: AxiosInstance;
   private static instance: Request;
 
-  constructor(defaultHeaders?: Record<string, string>) {
+  constructor(
+    baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL,
+    defaultHeaders?: Record<string, string>
+  ) {
     this.axiosInstance = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+      baseURL: baseUrl,
       headers: {
         ...defaultHeaders,
         "Content-Type": "application/json",
@@ -98,6 +101,6 @@ class Request {
   }
 }
 
-export const request = () => {
-  return new Request();
+export const request = (baseUrl?: string) => {
+  return new Request(baseUrl);
 };

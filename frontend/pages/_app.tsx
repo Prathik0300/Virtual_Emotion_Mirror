@@ -75,7 +75,6 @@ export default function App({
   pageProps,
   emotionCache = clientEmotionCache,
 }: MyAppProps) {
-
   const [queryclient] = useState(
     () =>
       new QueryClient({
@@ -100,7 +99,7 @@ export default function App({
                   }
                 >
                   <Layout>
-                    <>
+                    <>                      
                       <Component {...pageProps} />
                       <ToastContainer
                         position="bottom-right"

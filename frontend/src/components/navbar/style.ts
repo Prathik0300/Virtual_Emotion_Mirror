@@ -10,7 +10,6 @@ export const navbarContainer = css`
   position: relative;
 `;
 
-export const logoContainer = css``;
 export const navbarContentContainer = css`
     display: flex;
     align-items: center;

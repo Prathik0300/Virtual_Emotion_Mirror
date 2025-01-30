@@ -5,7 +5,6 @@ import {
   Post,
   Get,
   Param,
-  Put,
   Delete,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,6 +26,6 @@ export class UserController {
 
   @Delete(':email')
   async deleteUser(@Param() emailId: string) {
-      return await this.userServices.deleteUser(emailId);
+    return await this.userServices.deleteUser(emailId);
   }
 }
