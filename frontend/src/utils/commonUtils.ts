@@ -16,15 +16,27 @@ export const isLoginDateExpired = (
 };
 
 export const isEmptyData = (dataStructure: any) => {
-  if (Array.isArray(dataStructure) && dataStructure.length === 0) return true;
+  if (dataStructure === "undefined" || dataStructure === "null") {
+    return true;
+  }
+  if (Array.isArray(dataStructure) && dataStructure.length === 0) {
+    return true;
+  }
   if (
     typeof dataStructure === "object" &&
     Object.keys(dataStructure).length === 0
-  )
+  ) {
     return true;
-  if (typeof dataStructure === "string" && !dataStructure) return true;
-  if (typeof dataStructure === "number") return false;
-  if (!dataStructure) return true;
+  }
+  if (typeof dataStructure === "string" && !dataStructure) {
+    return true;
+  }
+  if (!dataStructure) {
+    return true;
+  }
+  if (typeof dataStructure === "undefined" || dataStructure === null) {
+    return true;
+  }
 
   return false;
 };

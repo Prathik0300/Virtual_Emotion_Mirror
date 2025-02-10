@@ -1,20 +1,20 @@
-import { mediaQueryMinWidth } from '@/src/utils/mediaQueries';
+import { mediaQueryMinWidth } from "@/src/utils/mediaQueries";
 import { css } from "@emotion/css";
 
-export const movieContainer = css`
+export const songContainer = css`
   padding: 10px;
   border-radius: 8px;
   overflow: hidden;
 `;
 
-export const movieContainerTitle = css`
+export const songContainerTitle = css`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 5px;
   color: var(--secondary-accent);
 `;
 
-export const movieSuggestionContainer = css`
+export const songSuggestionContainer = css`
   display: flex;
   overflow-x: auto;
   gap: 20px;
@@ -37,17 +37,18 @@ export const movieSuggestionContainer = css`
   }
 `;
 
-export const movieTileContainer = css`
+export const songTileContainer = css`
   position: relative;
-  flex: 0 0 120px; /* Smaller fixed width for tiles */
+  flex: 0 0 150px; /* Smaller fixed width for tiles */
   height: auto; /* Let the height adjust based on content */
   cursor: pointer;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
-
+  border-radius: 8px;
+  
   ${mediaQueryMinWidth.sm} {
-    flex: 0 0 100px;
+    flex: 0 0 150px;
   }
 
   &:hover {
@@ -56,35 +57,29 @@ export const movieTileContainer = css`
   }
 `;
 
-export const movieTile = css`
+export const songTile = css`
   width: 100%;
-  height: 180px; /* Smaller height for the image */
+  height: 150px; /* Smaller height for the image */
   object-fit: cover;
   border-radius: 8px;
   ${mediaQueryMinWidth.sm} {
-    width: 100px;
+    width: 150px;
     height: 150px;
   }
 `;
 
-export const movieTileContentContainer = css`
+export const songTileContentContainer = css`
   margin-top: 8px;
 `;
 
-export const ratingContainer = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const typeContainer = css`
   font-size: 12px;
   margin-bottom: 5px;
   color: #666;
+  font-weight: bold;
 `;
 
-export const ratingIcon = css`
-  margin-right: 5px;
-`;
-
-export const movieTitle = css`
+export const songNameContainer = css`
   font-size: 14px;
   font-weight: bold;
   color: #333;

@@ -2,24 +2,17 @@ import { useEffect, useState } from "react";
 import debounce from "lodash-es/debounce";
 
 const useIsMobile = (): boolean => {
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < 768 : false
-  );
+  const [isMobile, setIsMobile] = useState(false);
 
-  console.log({ w: window.innerWidth });
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const updateSize = debounce((): void => {
-      setIsMobile(window.innerWidth < 768);
-    }, 100);
-    window.addEventListener("resize", updateSize);
-    return (): void => {
-      window.removeEventListener("resize", updateSize);
-      updateSize.cancel();
+    const updateSize = (): void => {
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      setIsMobile(window.innerWidth < 769 && isTouchDevice);
     };
+    updateSize();
+    window.addEventListener("resize", debounce(updateSize, 50));
+    return (): void => window.removeEventListener("resize", updateSize);
   }, []);
 
   return isMobile;

@@ -35,7 +35,10 @@ class Request {
       (config) => {
         const token = this.getToken();
         if (token) {
-          config.headers["Authorization"] = `Bearer ${token}`;
+          config.headers = {
+            Authorization: `Bearer ${token}`,
+            ...config.headers,
+          };
         }
         return config;
       },
@@ -101,6 +104,9 @@ class Request {
   }
 }
 
-export const request = (baseUrl?: string) => {
-  return new Request(baseUrl);
+export const request = (
+  baseUrl?: string,
+  defaultHeaders?: Record<string, string>
+) => {
+  return new Request(baseUrl, defaultHeaders);
 };

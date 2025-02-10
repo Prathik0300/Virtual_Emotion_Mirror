@@ -1,3 +1,4 @@
+import { mediaQueryMaxWidth } from "@/src/utils/mediaQueries";
 import { css } from "@emotion/css";
 
 export const recommendationContainer = css`
@@ -16,22 +17,45 @@ export const recommendationContainer = css`
   border-radius: 10px;
 `;
 
+export const recommendationContent = css`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  ${mediaQueryMaxWidth.sm} {
+    flex-direction: column;
+  }
+`;
+
 export const title = css`
   font-weight: bold;
   font-size: 30px;
 `;
 
 export const movieRecommendations = css`
-  width: 100%;
-  max-width: 100%;
+  width: 50%;
+  max-width: 50%;
   height: max-content;
   border: 0.1px solid var(--secondary-accent-light);
   border-radius: 10px;
   overflow-x: hidden;
+
+  ${mediaQueryMaxWidth.sm} {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
 export const songRecommendations = css`
-  width: 100%;
-  max-width: 100%;
+  width: 50%;
+  max-width: 50%;
   border: 0.1px solid var(--secondary-accent-light);
   border-radius: 10px;
+  overflow-x: hidden;
+
+  ${mediaQueryMaxWidth.sm} {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
