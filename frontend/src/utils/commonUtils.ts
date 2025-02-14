@@ -66,3 +66,13 @@ export const askForCameraPermission = async () => {
     console.log(`Error accessing the camera : ${err}`);
   }
 };
+
+export const getBase64EncodedData = (width: number, height: number) => {
+  return `data:image/svg+xml;base64,${Buffer.from(
+    `
+  <svg width=${width} height=${height} xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="#E0E0E0" rx="5" ry="5" />
+  </svg>
+`
+  ).toString("base64")}`;
+};

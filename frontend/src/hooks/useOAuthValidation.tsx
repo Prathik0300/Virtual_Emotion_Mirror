@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { useUserContext } from "./useContext/useUserContext";
 import { isEmptyData } from "../utils/commonUtils";
 import { useToastMessage } from "./useToastMessage";
+import { useRouter } from "next/router";
 
 export const useOAuthValidation = () => {
   const {
@@ -13,6 +14,7 @@ export const useOAuthValidation = () => {
     userContextUpdater: { setUserProfile },
   } = useUserContext();
 
+  const { replace } = useRouter();
   const { triggerSuccessToast, triggerErrorToast } = useToastMessage();
   const { mutate: authValidate } = useMutation({
     mutationFn: OAuthValidate,
@@ -39,6 +41,7 @@ export const useOAuthValidation = () => {
       ...userData,
     }));
     triggerSuccessToast("Successfully Logged In!");
+    replace("/");
   };
 
   const GoogleOneTap = () => {

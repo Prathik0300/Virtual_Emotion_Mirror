@@ -1,4 +1,4 @@
-import { SPOTIFY_OAUTH } from "../constants/keys";
+import { SPOTIFY_EXPIRY, SPOTIFY_OAUTH } from "../constants/keys";
 import { request } from "../lib/Axios";
 import { isEmptyData } from "../utils/commonUtils";
 import { getCookieData, setCookieData } from "../utils/cookieUtil";
@@ -25,8 +25,13 @@ export const getSpotifyAccessToken = async () => {
         },
       }
     );
+
+    setCookieData(
+      SPOTIFY_EXPIRY,
+      JSON.stringify(Date.now() + response?.data.expires_in * 1000)
+    );
     setCookieData(SPOTIFY_OAUTH, JSON.stringify(response.data), {
-      expires: Date.now() + response.data?.expires_in * 1000,
+      expires: response.data?.expires_in / (60 * 60 * 24),
       path: "/",
       sameSite: "Strict",
       secure: true,
@@ -40,11 +45,13 @@ export const getSpotifyAccessToken = async () => {
 
 export const getGenreBasedSongRecommendation = async ({
   genre = "sad",
-  offset = 0,
+  pageParam = 0,
 }) => {
   try {
-    let spotifyAccessToken = await getCookieData(SPOTIFY_OAUTH);
-    if (isEmptyData(spotifyAccessToken)) {
+    let spotifyAccessToken = getCookieData(SPOTIFY_OAUTH);
+    const isSpotifyAuthExpired =
+      Date.now() > Number(getCookieData(SPOTIFY_EXPIRY));
+    if (isEmptyData(spotifyAccessToken) || isSpotifyAuthExpired) {
       spotifyAccessToken = await getSpotifyAccessToken();
     } else {
       spotifyAccessToken = JSON.parse(spotifyAccessToken || "{}");
@@ -56,14 +63,18 @@ export const getGenreBasedSongRecommendation = async ({
       params: {
         type: "album",
         q: encodeURIComponent(`genre:${genre}`),
-        offset,
+        offset: pageParam,
       },
       headers: {
         Authorization: `${spotifyAccessToken?.token_type} ${spotifyAccessToken?.access_token}`,
       },
     });
-    return recommendation.data;
+    return {
+      data: recommendation.data,
+      nextOffset: pageParam + 20,
+      prevOffset: pageParam - 20 > 0 ? pageParam - 20 : 0,
+    };
   } catch {
-    return {};
+    return { data: [], nextOffset: null, prevOffset: null };
   }
 };

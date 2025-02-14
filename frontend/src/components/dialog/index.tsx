@@ -7,9 +7,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import { drawerTitleContainer } from "./style";
 import { Drawer } from "@mui/material";
 
-const CustomDialog = ({ open, title, onCloseHandler, children }) => {
+const CustomDialog = ({
+  open,
+  title,
+  onCloseHandler,
+  children,
+  dwebStyles = {},
+}) => {
+  console.log({ dwebStyles });
   const isMobile = useIsMobile();
-  console.log({ isMobile });
   if (isMobile)
     return (
       <>
@@ -21,6 +27,7 @@ const CustomDialog = ({ open, title, onCloseHandler, children }) => {
               color: "#fff8e6",
               borderTopLeftRadius: "10px",
               borderTopRightRadius: "10px",
+              ...dwebStyles,
             },
           }}
           anchor="bottom"

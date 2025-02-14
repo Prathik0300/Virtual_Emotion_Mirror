@@ -12,16 +12,19 @@ import {
 } from "./style";
 import { useMovieRecommender } from "@/src/hooks/modules/recommendations/useMovieRecommender";
 import Image from "next/image";
-import { isEmptyData } from "@/src/utils/commonUtils";
+import { getBase64EncodedData, isEmptyData } from "@/src/utils/commonUtils";
 import RatingIcon from "@/public/rating.svg";
 import { useState } from "react";
 import { movieArray } from "@/src/temp/movie";
 import CustomDialog from "../../dialog";
 import MovieDetails from "./more-details";
+import MovieSkeleton from "../../skeletons/movieRecommendation";
 
 const MovieTile = ({ recommendation }) => {
   const [isImageError, setIsImageError] = useState(false);
   const [showMovieDetails, setShowMovieDetails] = useState(false);
+  const imagePlaceholder = getBase64EncodedData(110, 150);
+
   if (isEmptyData(recommendation?.imageurl)) {
     return;
   }
@@ -50,6 +53,8 @@ const MovieTile = ({ recommendation }) => {
           layout="fixed"
           alt={recommendation.title}
           onError={handleError}
+          placeholder="blur"
+          blurDataURL={imagePlaceholder}
         />
         <div className={movieTileContentContainer}>
           {recommendation.imdbrating && (
@@ -80,19 +85,23 @@ const MovieTile = ({ recommendation }) => {
 };
 
 const MovieRecommendation = ({ genre = "comedy" }) => {
-  const { results } = useMovieRecommender({ genre });
+  const { results, isFetchingData } = useMovieRecommender({ genre });
   console.log({ results });
   return (
     <div className={movieContainer}>
       <p className={movieContainerTitle}>Movies</p>
-      <div className={movieSuggestionContainer}>
-        {/* {results.map((recommendation) => {
-          return <MovieTile recommendation={recommendation} />;
-        })} */}
-        {movieArray.map((recommendation) => {
-          return <MovieTile recommendation={recommendation} />;
-        })}
-      </div>
+      {isFetchingData ? (
+        <MovieSkeleton />
+      ) : (
+        <div className={movieSuggestionContainer}>
+          {/* {results.map((recommendation) => {
+            return <MovieTile recommendation={recommendation} />;
+          })} */}
+          {movieArray.map((recommendation) => {
+            return <MovieTile recommendation={recommendation} />;
+          })}
+        </div>
+      )}
     </div>
   );
 };

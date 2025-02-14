@@ -7,6 +7,11 @@ export const songContainer = css`
   overflow: hidden;
 `;
 
+export const songsLayout = css`
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+`;
 export const songContainerTitle = css`
   font-size: 20px;
   font-weight: bold;
@@ -46,7 +51,7 @@ export const songTileContainer = css`
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   border-radius: 8px;
-  
+
   ${mediaQueryMinWidth.sm} {
     flex: 0 0 150px;
   }

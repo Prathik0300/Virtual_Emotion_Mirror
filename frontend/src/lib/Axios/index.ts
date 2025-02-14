@@ -53,11 +53,12 @@ class Request {
         return response;
       },
       (error) => {
+        console.log("interceptor response error : ", { error });
         if (Array.isArray(error?.response?.data?.message)) {
           error?.response?.data?.message.map((err: string) =>
             getErrorToast(err)
           );
-        } else {
+        } else if (error?.response?.statusText) {
           getErrorToast(error.response.statusText);
         }
         return error;

@@ -14,9 +14,9 @@ export const useLogin = () => {
       const loginResponse = await handleLogin({ email, password });
       console.log({ loginResponse });
       if (loginResponse.success) {
-        triggerSuccessToast("Successfully Logged in!");
-        setLoginData(loginResponse);
         replace("/");
+        // triggerSuccessToast("Successfully Logged in!");
+        setLoginData(loginResponse);
       } else {
         triggerErrorToast(loginResponse?.message);
       }

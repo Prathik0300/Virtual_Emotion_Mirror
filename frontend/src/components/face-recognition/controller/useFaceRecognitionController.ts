@@ -7,55 +7,76 @@ export const useFaceRecognitionController = () => {
   const canvasRef = useRef(null); // Reference to the canvas element
   const modelRef = useRef(null); // Reference to the canvas element
   const [isCameraActive, setIsCameraActive] = useState(false); // Camera state
+  const [isCameraLoading, setIsCameraLoading] = useState(false); // Camera state
 
   useEffect(() => {
     if (isCameraActive && modelRef.current && videoRef.current) {
       detectFaces(videoRef.current, modelRef.current);
     }
-  }, [isCameraActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCameraActive, isCameraLoading]);
 
-  // Start the camera and load the BlazeFace model
   const startCamera = async () => {
+    setIsCameraLoading(true);
     try {
-      // Load the BlazeFace model
-      const model = await blazeface.load();
-      console.log("BlazeFace model loaded!");
-      modelRef.current = model;
-      // Access the webcam
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      const video = videoRef.current;
-      video.srcObject = stream;
+      setTimeout(async () => {
+        if (!videoRef.current) {
+          alert("Video element is not available yet.");
+          return; // Prevent further execution
+        }
 
-      video.onloadedmetadata = () => {
-        video.play();
-        setIsCameraActive(true);
-        // detectFaces(video, model); // Start face detection
-      };
-    } catch (err) {
-      console.error("Failed to access webcam:", err);
+        // Load the BlazeFace model
+        const model = await blazeface.load();
+        modelRef.current = model;
+
+        // Access the webcam
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+
+        const video = videoRef.current;
+        if (!video) {
+          alert("Video element is not available yet.");
+          return;
+        }
+
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play();
+          setIsCameraActive(true);
+        };
+      }, 100);
+    } catch {
+      setIsCameraLoading(false);
       alert("Failed to access webcam. Please grant camera permissions.");
     }
   };
 
   // Detect faces and draw markings
   const detectFaces = async (video, model) => {
+    if (!model || !video) {
+      return;
+    }
     const canvas = canvasRef.current;
+
+    if (!canvas) {
+      return;
+    }
+
     const ctx = canvas.getContext("2d");
-    console.log("inside detect faces , : ", video, model);
+
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      return;
+    }
     canvas.width = video.videoWidth;
-    console.log("1");
     canvas.height = video.videoHeight;
-    console.log("2");
 
     const detect = async () => {
-      console.log("inside detect!!");
-      if (!isCameraActive) {
+      if (!isCameraActive || !modelRef.current || !videoRef.current) {
         return;
-      } // Stop detection if the camera is inactive
-      // Perform face detection
+      }
       const predictions = await model.estimateFaces(video, false);
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-      console.log({ predictions });
       // Draw face bounding boxes and landmarks
       if (predictions.length > 0) {
         predictions.forEach((prediction) => {
@@ -90,22 +111,29 @@ export const useFaceRecognitionController = () => {
 
   // Stop the camera and clear the video stream
   const stopCamera = () => {
-    const video = videoRef.current;
-    const stream = video.srcObject;
+    setIsCameraLoading(false);
+    setIsCameraActive(false);
 
-    if (stream) {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject;
       const tracks = stream.getTracks();
       tracks.forEach((track) => track.stop()); // Stop all tracks
-      video.srcObject = null;
+      videoRef.current.srcObject = null;
+      videoRef.current = null;
     }
 
-    setIsCameraActive(false);
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      canvasRef.current = null;
+    }
   };
 
   return {
     isCameraActive,
     videoRef,
     canvasRef,
+    isCameraLoading,
     startCamera,
     stopCamera,
   };
