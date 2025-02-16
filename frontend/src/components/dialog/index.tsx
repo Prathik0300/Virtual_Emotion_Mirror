@@ -4,7 +4,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { drawerTitleContainer } from "./style";
+import { drawerTitleContainer, drawerContainer } from "./style";
 import { Drawer } from "@mui/material";
 
 const CustomDialog = ({
@@ -13,6 +13,7 @@ const CustomDialog = ({
   onCloseHandler,
   children,
   dwebStyles = {},
+  mwebStyles = {},
 }) => {
   console.log({ dwebStyles });
   const isMobile = useIsMobile();
@@ -27,14 +28,14 @@ const CustomDialog = ({
               color: "#fff8e6",
               borderTopLeftRadius: "10px",
               borderTopRightRadius: "10px",
-              ...dwebStyles,
+              ...mwebStyles,
             },
           }}
           anchor="bottom"
           open={open}
           onClose={onCloseHandler}
         >
-          <>
+          <div className={drawerContainer}>
             <div className={drawerTitleContainer}>
               {title}
               <div>
@@ -50,7 +51,7 @@ const CustomDialog = ({
               </div>
             </div>
             <div>{children}</div>
-          </>
+          </div>
         </Drawer>
       </>
     );
@@ -67,6 +68,7 @@ const CustomDialog = ({
             backgroundColor: "#b41859",
             color: "#fff8e6",
             borderRadius: "10px",
+            ...dwebStyles,
           },
         }}
       >

@@ -2,7 +2,6 @@ import { useFaceRecognitionController } from "@/src/components/face-recognition/
 import { dashboardContainer, contentContainer, title } from "./style";
 import dynamic from "next/dynamic";
 import { Button } from "@mui/material";
-import AnalyzeButton from "@/src/components/button/analyze";
 
 const BarGraph = dynamic(() => import("@/src/components/dashboard/graph"), {
   ssr: false,
@@ -12,7 +11,6 @@ const FaceRecognition = dynamic(
   () => import("@/src/components/face-recognition"),
   {
     ssr: false,
-    loading: () => <AnalyzeButton />,
   }
 );
 const Dashboard = () => {
@@ -21,9 +19,15 @@ const Dashboard = () => {
     videoRef,
     isCameraLoading,
     canvasRef,
+    modelRef,
+    capturedImage,
     startCamera,
     stopCamera,
+    captureImage,
+    retakeImage,
   } = useFaceRecognitionController();
+  const isRefMissing =
+    !canvasRef.current || !modelRef.current || !videoRef.current;
   return (
     <div className={dashboardContainer}>
       <p className={title}>Dashboard</p>
@@ -45,12 +49,16 @@ const Dashboard = () => {
           Analyze My Emotion
         </Button>
         <FaceRecognition
+          capturedImage={capturedImage}
+          isRefMissing={isRefMissing}
           isCameraActive={isCameraActive}
           isCameraLoading={isCameraLoading}
           videoRef={videoRef}
           canvasRef={canvasRef}
+          captureImage={captureImage}
           startCamera={startCamera}
           stopCamera={stopCamera}
+          retakeImage={retakeImage}
         />
       </div>
     </div>

@@ -1,19 +1,84 @@
-import { useEffect } from "react";
+import { Button } from "@mui/material";
 import CustomDialog from "../dialog";
-import CustomModal from "../modal";
-import { useFaceRecognitionController } from "./controller/useFaceRecognitionController";
-import { videoContainer } from "./styles";
+import VideoSkeleton from "../skeletons/video";
+import {
+  canvasStyles,
+  videoContainer,
+  videoStyles,
+  captureBtn,
+  faceRecognitionContainer,
+  imageCaptured,
+  imageContainer,
+  btnContainer,
+  btn,
+  retakeBtn,
+  analyzeBtn,
+} from "./styles";
+import Image from "next/image";
+import classNames from "classnames";
 
 const FaceRecognition = ({
   isCameraActive,
   videoRef,
   canvasRef,
+  capturedImage,
   isCameraLoading,
-  startCamera,
   stopCamera,
+  captureImage,
+  retakeImage,
 }: any) => {
-  console.log({ isCameraActive, isCameraLoading });
+  const showSkeleton = isCameraLoading && !isCameraActive;
+  console.log(">>> : ", {
+    isCameraActive,
+    isCameraLoading,
+    showSkeleton,
+    capturedImage,
+  });
 
+  const renderBtn = () => {
+    if (capturedImage) {
+      return (
+        <div className={btnContainer}>
+          <Button
+            variant="outlined"
+            onClick={retakeImage}
+            className={classNames(btn, retakeBtn)}
+          >
+            Retake
+          </Button>
+          <Button variant="contained" className={classNames(btn, analyzeBtn)}>
+            Analyze
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <Button variant="contained" className={captureBtn} onClick={captureImage}>
+        Capture
+      </Button>
+    );
+  };
+
+  const renderComponent = () => {
+    if (capturedImage) {
+      console.log(">>> : inside captured image condition function");
+      return (
+        <div className={imageContainer}>
+          <Image
+            src={capturedImage}
+            className={imageCaptured}
+            layout="fill"
+            alt="captured image"
+          />
+        </div>
+      );
+    }
+
+    if (showSkeleton) {
+      return <VideoSkeleton />;
+    }
+  };
   return (
     <>
       <CustomDialog
@@ -21,43 +86,31 @@ const FaceRecognition = ({
         onCloseHandler={stopCamera}
         title="Analyze my Emotion"
         dwebStyles={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          maxHeight: "400px",
+          maxHeight: "580px",
+          height: "100%",
+        }}
+        mwebStyles={{
+          maxHeight: "420px",
           height: "100%",
         }}
       >
-        <div className={videoContainer}>
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            style={{
-              width: "500px",
-              height: "400px",
-              position: "relative",
-              display: isCameraActive ? "block" : "none",
-              zIndex: 100,
-            }}
-          ></video>
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              top: 9,
-              left: 15,
-              width: "500px",
-              height: "378px",
-              display: isCameraActive ? "block" : "none",
-              zIndex: 222,
-            }}
-          ></canvas>
+        <div className={faceRecognitionContainer}>
+          {renderComponent()}
+          <div className={videoContainer}>
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              className={videoStyles(isCameraActive)}
+            ></video>
+            <canvas
+              ref={canvasRef}
+              className={canvasStyles(isCameraActive)}
+            ></canvas>
+          </div>
+          {renderBtn()}
         </div>
       </CustomDialog>
-      {/* <CustomModal open={isCameraActive} onCloseHandler={stopCamera}> */}
-
-      {/* </CustomModal> */}
     </>
   );
 };

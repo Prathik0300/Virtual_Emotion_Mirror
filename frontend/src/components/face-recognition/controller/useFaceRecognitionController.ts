@@ -8,6 +8,7 @@ export const useFaceRecognitionController = () => {
   const modelRef = useRef(null); // Reference to the canvas element
   const [isCameraActive, setIsCameraActive] = useState(false); // Camera state
   const [isCameraLoading, setIsCameraLoading] = useState(false); // Camera state
+  const [capturedImage, setCapturedImage] = useState("");
 
   useEffect(() => {
     if (isCameraActive && modelRef.current && videoRef.current) {
@@ -15,6 +16,53 @@ export const useFaceRecognitionController = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCameraActive, isCameraLoading]);
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+      setCapturedImage("");
+      setIsCameraActive(false);
+      setIsCameraLoading(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && isCameraActive) {
+        stopCamera();
+      }
+    };
+
+    const handleWindowBlur = () => {
+      if (isCameraActive) {
+        stopCamera(); // Stop camera when user switches applications
+      }
+    };
+
+    const handleBeforeUnload = () => {
+      stopCamera(); // Ensure cleanup when closing the tab
+    };
+
+    const handleMediaError = (event) => {
+      console.error("Camera error detected:", event);
+      stopCamera();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleWindowBlur);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    navigator.mediaDevices.addEventListener("devicechange", handleMediaError);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleWindowBlur);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      navigator.mediaDevices.removeEventListener(
+        "devicechange",
+        handleMediaError
+      );
+    };
+  }, [isCameraActive]);
 
   const startCamera = async () => {
     setIsCameraLoading(true);
@@ -109,11 +157,44 @@ export const useFaceRecognitionController = () => {
     await detect();
   };
 
-  // Stop the camera and clear the video stream
-  const stopCamera = () => {
-    setIsCameraLoading(false);
-    setIsCameraActive(false);
+  const captureImage = () => {
+    if (!videoRef.current) {
+      alert("Cannot capture image! Please try again after sometime");
+      return;
+    }
 
+    const captureCanvas = document.createElement("canvas");
+    const ctx = captureCanvas.getContext("2d");
+
+    captureCanvas.width = videoRef.current.videoWidth;
+    captureCanvas.height = videoRef.current.videoHeight;
+
+    ctx?.drawImage(
+      videoRef.current,
+      0,
+      0,
+      captureCanvas.width,
+      captureCanvas.height
+    );
+    const imageDataURL = captureCanvas.toDataURL("image/png");
+    setCapturedImage(imageDataURL);
+    pauseCamera();
+  };
+
+  const retakeImage = () => {
+    modelRef.current = null;
+    canvasRef.current = null;
+    setCapturedImage("");
+    startCamera();
+  };
+
+  const pauseCamera = () => {
+    setIsCameraActive(false);
+  };
+
+  const stopCamera = () => {
+    setIsCameraActive(false);
+    setCapturedImage("");
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
       const tracks = stream.getTracks();
@@ -127,14 +208,21 @@ export const useFaceRecognitionController = () => {
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       canvasRef.current = null;
     }
+    setTimeout(() => {
+      setIsCameraLoading(false);
+    }, 200);
   };
 
   return {
     isCameraActive,
     videoRef,
     canvasRef,
+    modelRef,
     isCameraLoading,
+    capturedImage,
     startCamera,
     stopCamera,
+    captureImage,
+    retakeImage,
   };
 };
