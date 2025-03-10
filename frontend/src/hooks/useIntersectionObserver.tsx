@@ -15,10 +15,6 @@ export const useIntersectionObserver = ({
       return;
     }
     const rootElement = rootRef?.current || null;
-    console.log({
-      rootElement,
-      targetRef: targetRef.current,
-    });
 
     const observer = new IntersectionObserver(
       ([entry]) => {

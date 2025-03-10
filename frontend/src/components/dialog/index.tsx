@@ -15,7 +15,6 @@ const CustomDialog = ({
   dwebStyles = {},
   mwebStyles = {},
 }) => {
-  console.log({ dwebStyles });
   const isMobile = useIsMobile();
   if (isMobile)
     return (

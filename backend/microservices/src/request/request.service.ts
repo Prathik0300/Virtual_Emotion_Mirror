@@ -34,7 +34,6 @@ class Request {
         return response;
       },
       (error) => {
-        console.log('interceptor response error : ', { error });
         return new Exception('Bad Request', HttpStatus.BAD_REQUEST);
       },
     );

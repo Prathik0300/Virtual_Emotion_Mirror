@@ -15,7 +15,6 @@ export const useLogin = () => {
   const onLogin = async () => {
     try {
       const loginResponse = await handleLogin({ email, password });
-      console.log({ loginResponse });
       if (loginResponse.success) {
         const formattedData = formatResponse(loginResponse);
         triggerSuccessToast("Successfully Logged in!");

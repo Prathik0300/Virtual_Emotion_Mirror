@@ -74,7 +74,6 @@ export const useMovieRecommender = () => {
   }, [isLoading, isFetching, isFetchingNextPage]);
 
   useEffect(() => {
-    console.log("isNext page use effect");
     if (isIntersecting && hasNextPage) {
       fetchNextPage();
     }
@@ -86,7 +85,6 @@ export const useMovieRecommender = () => {
     }
   }, [isError, triggerErrorToast]);
 
-  console.log({ movies });
   return {
     movies,
     hasPreviousPage,

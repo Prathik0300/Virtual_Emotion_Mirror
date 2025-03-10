@@ -16,7 +16,6 @@ export const saveImageAnalysis = async (blobUrl: string, emailId: string) => {
     });
     return response.data;
   } catch (error) {
-    console.log(">>> : ", { error });
     return { success: false, message: "Error" };
   }
 };
@@ -30,10 +29,8 @@ export const getUserEmotionAnalysis = async (emailId: string) => {
   }
   try {
     const response = await request().get(`/analysis/${emailId}`);
-    console.log("ANALYSIS RESPONSE >>>> : ", { response });
     return { success: true, data: response.data };
   } catch (error) {
-    console.log(">>>> : ", { error });
     return { success: false, message: error };
   }
 };

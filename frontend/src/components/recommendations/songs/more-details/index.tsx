@@ -37,8 +37,7 @@ const SongDetails = ({ recommendation }) => {
           url: recommendation.external_urls.spotify,
         });
         triggerSuccessToast("Successfully copied to clipboard");
-      } catch (e) {
-        console.log({ e });
+      } catch {
         triggerErrorToast("Could not copy to clipboard");
       }
     } else {

@@ -7,7 +7,6 @@ export class AnalysisController {
 
   @Get(':emailId')
   async getUserAnalysis(@Param('emailId') emailId: string) {
-    console.log('PARAMMM : ', emailId);
     return await this.analysisServices.getUserAnalysis(emailId);
   }
 }

@@ -53,17 +53,15 @@ export const askForCameraPermission = async () => {
     });
 
     if (permissionStatus.state === PERMISSION_STATUS.GRANTED) {
-      console.log("permission granted");
     } else if (permissionStatus.state === PERMISSION_STATUS.PROMPT) {
-      console.log("Prompting for camera permission!");
       await navigator.mediaDevices.getUserMedia({ video: true });
-      alert("Permission granted!");
+      getSuccessToast("Permission granted!");
     } else if (permissionStatus.state === PERMISSION_STATUS.DENIED) {
       console.warn("Camera Permission denied!");
-      alert("Camera access denied!");
+      getErrorToast("Camera access denied!");
     }
-  } catch (err) {
-    console.log(`Error accessing the camera : ${err}`);
+  } catch {
+    getErrorToast("Error accessing the camera");
   }
 };
 

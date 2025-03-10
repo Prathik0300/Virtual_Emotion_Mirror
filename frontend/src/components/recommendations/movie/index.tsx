@@ -106,7 +106,6 @@ const MovieRecommendation = () => {
         <div ref={movieContainerRef} className={movieSuggestionContainer}>
           {!isEmptyData(movies?.pages) &&
             movies?.pages.map((page, pageIndex) => {
-              console.log("!>>> L : ", page);
               return (
                 !isEmptyData(page?.data?.results) &&
                 page?.data?.results?.map((recommendation, movieIndex) => {

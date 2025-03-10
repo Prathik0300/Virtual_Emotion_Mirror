@@ -29,12 +29,7 @@ const FaceRecognition = ({
   retakeImage,
   uploadImage,
 }: any) => {
-  console.log(">>> : ", {
-    isCameraActive,
-    isCameraLoading,
-    showSkeleton,
-    capturedImage,
-  });
+
 
   const renderBtn = () => {
     if (capturedImage) {
@@ -67,7 +62,6 @@ const FaceRecognition = ({
 
   const renderComponent = () => {
     if (capturedImage) {
-      console.log(">>> : inside captured image condition function");
       return (
         <div className={imageContainer}>
           <Image

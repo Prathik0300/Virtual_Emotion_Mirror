@@ -31,7 +31,6 @@ const Dashboard = () => {
     retakeImage,
     uploadImage,
   } = useFaceRecognitionController();
-  console.log({ isEmotionAnalysisCompleted });
   const isRefMissing =
     !canvasRef.current || !modelRef.current || !videoRef.current;
   return (

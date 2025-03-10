@@ -50,11 +50,9 @@ export class AuthController {
     @Res() response: Response,
   ) {
     try {
-      console.log('!!! > : ', { userSignupDto });
       const user = await this.authService.userSignup(userSignupDto);
       return response.json({ ...user });
     } catch (error) {
-      console.log('!, ', { error });
       return response.json({ ...error, success: false });
     }
   }

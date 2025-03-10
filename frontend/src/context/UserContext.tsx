@@ -17,7 +17,6 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   // Check Cookie Data
   const access_token = useState(() => {
     const token = getCookieData(ACCESS_TOKEN);
-    console.log({ token });
     if (token) {
       return token;
     }

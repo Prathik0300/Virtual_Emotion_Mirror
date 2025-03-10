@@ -12,10 +12,8 @@ export function middleware(request: NextRequest) {
   headers.set("x-url", request.nextUrl.origin);
 
   // Authenticating Users
-  // const cookies = cookie.parse(headers.get("cookie") || "");
   const access_token = cookieStore.get(ACCESS_TOKEN)?.value;
   let vem_user = cookieStore.get(VEM_USER)?.value;
-  console.log({ access_token, cookieStore });
   if (vem_user) {
     vem_user = JSON.parse(vem_user);
   }

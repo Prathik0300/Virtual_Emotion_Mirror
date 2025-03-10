@@ -28,7 +28,6 @@ export class VemService {
           ...formData.getHeaders(),
         },
       });
-      console.log('RESPONSE FROM PYTHON : ', res.data.analysis);
       return this.analysisService.saveAnalysis(res.data.analysis, emailId);
     } catch (error) {
       throw new Exception(

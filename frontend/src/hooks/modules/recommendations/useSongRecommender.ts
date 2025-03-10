@@ -70,7 +70,6 @@ export const useSongRecommender = () => {
   }, [isLoading, isFetching, isFetchingNextPage]);
 
   useEffect(() => {
-    console.log("isNext page use effect");
     if (isIntersecting && hasNextPage) {
       fetchNextPage();
     }

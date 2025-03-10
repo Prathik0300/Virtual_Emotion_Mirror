@@ -22,7 +22,6 @@ export const useFaceRecognitionController = () => {
 
   useEffect(() => {
     if (isCameraActive && modelRef.current && videoRef.current) {
-      console.log(">>> : inside");
       detectFaces();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,22 +119,14 @@ export const useFaceRecognitionController = () => {
     const video = videoRef.current;
     const model = modelRef.current;
     const canvas = canvasRef.current;
-    console.log("DEBUG : ", {
-      model,
-      video,
-      canvas,
-      m: modelRef.current,
-      v: videoRef.current,
-    });
+
     if (!model || !video || !canvas) {
-      console.log("DEBUG : 1");
       return;
     }
 
     const ctx = canvas.getContext("2d");
 
     if (video.videoWidth === 0 || video.videoHeight === 0) {
-      console.log("DEBUG : 3");
       return;
     }
     canvas.width = video.videoWidth;
@@ -143,12 +134,10 @@ export const useFaceRecognitionController = () => {
 
     const detect = async () => {
       if (!isCameraActive || !model || !video) {
-        console.log("DEBUG : 4");
         return;
       }
 
       if (video.videoWidth === 0 || video.videoHeight === 0) {
-        console.log("DEBUG : 5");
         return;
       }
 
@@ -210,7 +199,6 @@ export const useFaceRecognitionController = () => {
       if (blob) {
         const blobURL = URL.createObjectURL(blob);
         setCapturedImage(blobURL);
-        console.log(">>> : ", { blobURL });
         pauseCamera();
       }
     }, "image/png");

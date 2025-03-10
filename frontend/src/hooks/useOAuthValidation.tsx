@@ -19,7 +19,6 @@ export const useOAuthValidation = () => {
     userContextValues: { userProfile },
     userContextUpdater: { setUserProfile },
   } = useUserContext();
-  console.log(">>>> ", { userProfile });
   const { replace } = useRouter();
   const { triggerSuccessToast, triggerErrorToast } = useToastMessage();
   const { mutate: authValidate } = useMutation({
@@ -36,8 +35,6 @@ export const useOAuthValidation = () => {
         ...res,
         access_token: res.access_token,
       });
-      console.log(">>>> RES : ", { res });
-      console.log(">>>> RES : ", { formattedData });
       setUserProfile(formattedData);
       authValidate(res);
     },
@@ -45,18 +42,14 @@ export const useOAuthValidation = () => {
   });
 
   const onGoogleLoginSuccess = (userData: any) => {
-    console.log(">>>> D2 ", { userData });
     const formattedData = formatResponse({ ...userProfile, ...userData });
-    console.log(">>>> D2 ", { formattedData });
     setUserProfile(formattedData);
     triggerSuccessToast("Successfully Logged In!");
     replace("/");
   };
 
   const onGoogleOneTapSuccess = (userData: any) => {
-    console.log(">>>> D1 ", { userData });
     const formattedData = formatResponse({ ...userData, userId: uuidv4() });
-    console.log(">>>> D1 ", { formattedData });
     setUserProfile(formattedData);
     setLoginData(formattedData);
     triggerSuccessToast("Successfully Logged In!");
@@ -70,7 +63,6 @@ export const useOAuthValidation = () => {
           useOneTap
           onSuccess={(res) => {
             const userData = jwtDecode(res.credential as string);
-            console.log(">>>> D", { res, userData });
             onGoogleOneTapSuccess({
               ...userData,
               access_token: res.credential,
