@@ -17,6 +17,7 @@ export class AuthService {
   async userSignup(userSignupDto: UserSignupDto): Promise<UserAuthResponseDto> {
     try {
       const newUser = await this.userServices.createUser(userSignupDto);
+      console.log({ newUser });
       if (newUser) {
         const transformedUser = plainToClass(UserAuthResponseDto, {
           ...newUser,
@@ -28,7 +29,7 @@ export class AuthService {
         `User with email ${userSignupDto.emailId} already exists!`,
       );
     } catch (error) {
-      console.log({ error });
+      console.log('>>>> : ', { error });
       throw new Exception(
         error?.response?.message,
         error?.response?.statusCode,

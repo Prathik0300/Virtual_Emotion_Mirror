@@ -44,7 +44,7 @@ export const getSpotifyAccessToken = async () => {
 };
 
 export const getGenreBasedSongRecommendation = async ({
-  genre = "sad",
+  genre = "chill",
   pageParam = 0,
 }) => {
   try {

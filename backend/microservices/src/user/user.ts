@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/database/schemas/user.schema';
 import { Exception } from 'src/error/error.service';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserServices {

@@ -1,10 +1,19 @@
-import { mediaQueryMinWidth } from '@/src/utils/mediaQueries';
+import { mediaQueryMinWidth } from "@/src/utils/mediaQueries";
 import { css } from "@emotion/css";
+
+export const initialFetchContainer = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 221px;
+  width: 100%;
+`;
 
 export const movieContainer = css`
   padding: 10px;
   border-radius: 8px;
   overflow: hidden;
+  min-height: 269px;
 `;
 
 export const movieContainerTitle = css`

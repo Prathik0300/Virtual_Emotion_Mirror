@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { PERMISSION_STATUS } from "../constants/enums";
+import { MONTH_MAP, PERMISSION_STATUS } from "../constants/enums";
 
 export const isLoginDateExpired = (
   loggedInDate: Date,
@@ -75,4 +75,35 @@ export const getBase64EncodedData = (width: number, height: number) => {
   </svg>
 `
   ).toString("base64")}`;
+};
+
+const addSuffixToDate = (date: number) => {
+  let suffix = "th";
+
+  if (date % 10 === 1 && date !== 11) {
+    suffix = "st";
+  } else if (date % 10 === 2 && date !== 12) {
+    suffix = "nd";
+  } else if (date % 10 === 3 && date !== 13) {
+    suffix = "rd";
+  }
+
+  return `${date}${suffix}`;
+};
+export const generateGraphDataKey = (dataKey: string) => {
+  if (isEmptyData(dataKey)) {
+    return "";
+  }
+  const dataKeyArr = dataKey.trim().split("/");
+  if (dataKeyArr.length === 3) {
+    const month = MONTH_MAP[dataKeyArr[1]];
+    return `${addSuffixToDate(parseInt(dataKeyArr[0], 10))} ${month}, ${
+      dataKeyArr[2]
+    }`;
+  } else if (dataKeyArr.length === 2) {
+    const month = MONTH_MAP[dataKeyArr[0]];
+    return `${month}, ${dataKeyArr[1]}`;
+  } else if (dataKeyArr.length === 1) {
+    return dataKeyArr[0];
+  }
 };

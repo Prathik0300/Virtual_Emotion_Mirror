@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import * as blazeface from "@tensorflow-models/blazeface";
 import "@tensorflow/tfjs-backend-webgl";
+import { saveImageAnalysis } from "@/src/apis/imageAnalysis";
+import { useToastMessage } from "@/src/hooks/useToastMessage";
+import { useUserContext } from "@/src/hooks/useContext/useUserContext";
 
 export const useFaceRecognitionController = () => {
   const videoRef = useRef(null); // Reference to the video element
@@ -8,11 +11,19 @@ export const useFaceRecognitionController = () => {
   const modelRef = useRef(null); // Reference to the canvas element
   const [isCameraActive, setIsCameraActive] = useState(false); // Camera state
   const [isCameraLoading, setIsCameraLoading] = useState(false); // Camera state
+  const [showSkeleton, setShowSkeleton] = useState(true);
+  const [isEmotionAnalysisCompleted, setIsEmotionAnalysisCompleted] =
+    useState(false);
   const [capturedImage, setCapturedImage] = useState("");
+  const {
+    userContextValues: { userProfile },
+  } = useUserContext();
+  const { triggerErrorToast, triggerSuccessToast } = useToastMessage();
 
   useEffect(() => {
     if (isCameraActive && modelRef.current && videoRef.current) {
-      detectFaces(videoRef.current, modelRef.current);
+      console.log(">>> : inside");
+      detectFaces();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCameraActive, isCameraLoading]);
@@ -23,6 +34,8 @@ export const useFaceRecognitionController = () => {
       setCapturedImage("");
       setIsCameraActive(false);
       setIsCameraLoading(false);
+      setShowSkeleton(true);
+      setIsEmotionAnalysisCompleted(false);
     };
   }, []);
 
@@ -66,6 +79,7 @@ export const useFaceRecognitionController = () => {
 
   const startCamera = async () => {
     setIsCameraLoading(true);
+    setIsEmotionAnalysisCompleted(false);
     try {
       setTimeout(async () => {
         if (!videoRef.current) {
@@ -90,6 +104,7 @@ export const useFaceRecognitionController = () => {
 
         video.srcObject = stream;
         video.onloadedmetadata = () => {
+          setShowSkeleton(false);
           video.play();
           setIsCameraActive(true);
         };
@@ -101,28 +116,42 @@ export const useFaceRecognitionController = () => {
   };
 
   // Detect faces and draw markings
-  const detectFaces = async (video, model) => {
-    if (!model || !video) {
-      return;
-    }
+  const detectFaces = async () => {
+    const video = videoRef.current;
+    const model = modelRef.current;
     const canvas = canvasRef.current;
-
-    if (!canvas) {
+    console.log("DEBUG : ", {
+      model,
+      video,
+      canvas,
+      m: modelRef.current,
+      v: videoRef.current,
+    });
+    if (!model || !video || !canvas) {
+      console.log("DEBUG : 1");
       return;
     }
 
     const ctx = canvas.getContext("2d");
 
     if (video.videoWidth === 0 || video.videoHeight === 0) {
+      console.log("DEBUG : 3");
       return;
     }
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const detect = async () => {
-      if (!isCameraActive || !modelRef.current || !videoRef.current) {
+      if (!isCameraActive || !model || !video) {
+        console.log("DEBUG : 4");
         return;
       }
+
+      if (video.videoWidth === 0 || video.videoHeight === 0) {
+        console.log("DEBUG : 5");
+        return;
+      }
+
       const predictions = await model.estimateFaces(video, false);
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
       // Draw face bounding boxes and landmarks
@@ -149,9 +178,9 @@ export const useFaceRecognitionController = () => {
           });
         });
       }
+      requestAnimationFrame(detect);
 
       // Continue the detection loop
-      requestAnimationFrame(detect);
     };
 
     await detect();
@@ -176,40 +205,83 @@ export const useFaceRecognitionController = () => {
       captureCanvas.width,
       captureCanvas.height
     );
-    const imageDataURL = captureCanvas.toDataURL("image/png");
-    setCapturedImage(imageDataURL);
-    pauseCamera();
+
+    captureCanvas.toBlob(async (blob) => {
+      if (blob) {
+        const blobURL = URL.createObjectURL(blob);
+        setCapturedImage(blobURL);
+        console.log(">>> : ", { blobURL });
+        pauseCamera();
+      }
+    }, "image/png");
+  };
+
+  const uploadImage = async () => {
+    try {
+      const response = await saveImageAnalysis(
+        capturedImage,
+        userProfile.email
+      );
+      if (response?.success) {
+        triggerSuccessToast(response.message);
+      } else {
+        triggerErrorToast(response?.message);
+      }
+    } catch (error) {
+      triggerErrorToast(
+        error?.message || "Unable to process image at the moment"
+      );
+    } finally {
+      setTimeout(() => {
+        stopCamera();
+      }, 500);
+    }
   };
 
   const retakeImage = () => {
-    modelRef.current = null;
-    canvasRef.current = null;
     setCapturedImage("");
-    startCamera();
+    clearCanvas();
+    setShowSkeleton(true);
+    setIsCameraActive(false);
+    setTimeout(() => {
+      startCamera();
+    }, 500);
   };
 
   const pauseCamera = () => {
+    modelRef.current = null;
+    clearCanvas();
+    clearVideo();
     setIsCameraActive(false);
   };
 
-  const stopCamera = () => {
-    setIsCameraActive(false);
-    setCapturedImage("");
+  const clearCanvas = () => {
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+  };
+
+  const clearVideo = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
       const tracks = stream.getTracks();
       tracks.forEach((track) => track.stop()); // Stop all tracks
       videoRef.current.srcObject = null;
-      videoRef.current = null;
     }
+  };
+  const stopCamera = () => {
+    setShowSkeleton(true);
+    setIsCameraActive(false);
+    setCapturedImage("");
+    clearVideo();
+    clearCanvas();
+    canvasRef.current = null;
+    videoRef.current = null;
 
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      canvasRef.current = null;
-    }
     setTimeout(() => {
       setIsCameraLoading(false);
+      setIsEmotionAnalysisCompleted(true);
     }, 200);
   };
 
@@ -220,9 +292,12 @@ export const useFaceRecognitionController = () => {
     modelRef,
     isCameraLoading,
     capturedImage,
+    showSkeleton,
+    isEmotionAnalysisCompleted,
     startCamera,
     stopCamera,
     captureImage,
     retakeImage,
+    uploadImage,
   };
 };

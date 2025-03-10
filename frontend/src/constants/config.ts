@@ -5,5 +5,4 @@ export const MOVIE_RECOMMENDER_API_CONFIG = {
   type: "movie",
   language: "english,hindi",
   sort: "latest",
-  page: "1",
 } as const;

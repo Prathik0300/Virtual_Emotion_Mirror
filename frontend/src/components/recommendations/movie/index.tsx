@@ -9,18 +9,20 @@ import {
   ratingContainer,
   movieTitle,
   movieTileContentContainer,
+  initialFetchContainer,
 } from "./style";
 import { useMovieRecommender } from "@/src/hooks/modules/recommendations/useMovieRecommender";
 import Image from "next/image";
 import { getBase64EncodedData, isEmptyData } from "@/src/utils/commonUtils";
 import RatingIcon from "@/public/rating.svg";
 import { useState } from "react";
-import { movieArray } from "@/src/temp/movie";
 import CustomDialog from "../../dialog";
 import MovieDetails from "./more-details";
 import MovieSkeleton from "../../skeletons/movieRecommendation";
+import LottieApp from "@/src/lib/Lottie";
+import recommendationLoader from "@/public/lottie/recommendationLoader.json";
 
-const MovieTile = ({ recommendation }) => {
+const MovieTile = ({ recommendation, targetRef }) => {
   const [isImageError, setIsImageError] = useState(false);
   const [showMovieDetails, setShowMovieDetails] = useState(false);
   const imagePlaceholder = getBase64EncodedData(110, 150);
@@ -39,7 +41,7 @@ const MovieTile = ({ recommendation }) => {
 
   return (
     <>
-      <div className={movieTileContainer}>
+      <div ref={targetRef} className={movieTileContainer}>
         <Image
           onClick={movieTileClickHandler}
           className={movieTile}
@@ -84,24 +86,47 @@ const MovieTile = ({ recommendation }) => {
   );
 };
 
-const MovieRecommendation = ({ genre = "comedy" }) => {
-  const { results, isFetchingData } = useMovieRecommender({ genre });
-  console.log({ results });
+const MovieRecommendation = () => {
+  const {
+    movies,
+    hasPreviousPage,
+    isFetchingMovieData,
+    movieContainerRef,
+    targetRef,
+  } = useMovieRecommender();
+
   return (
     <div className={movieContainer}>
       <p className={movieContainerTitle}>Movies</p>
-      {isFetchingData ? (
-        <MovieSkeleton />
+      {!hasPreviousPage && isFetchingMovieData ? (
+        <div className={initialFetchContainer}>
+          <LottieApp animationData={recommendationLoader} height={"80px"} />
+        </div>
       ) : (
-        <div className={movieSuggestionContainer}>
-          {/* {results.map((recommendation) => {
-            return <MovieTile recommendation={recommendation} />;
-          })} */}
-          {movieArray.map((recommendation) => {
-            return <MovieTile recommendation={recommendation} />;
-          })}
+        <div ref={movieContainerRef} className={movieSuggestionContainer}>
+          {!isEmptyData(movies?.pages) &&
+            movies?.pages.map((page, pageIndex) => {
+              console.log("!>>> L : ", page);
+              return (
+                !isEmptyData(page?.data?.results) &&
+                page?.data?.results?.map((recommendation, movieIndex) => {
+                  const isLast =
+                    pageIndex === movies.pages.length - 1 &&
+                    movieIndex === page.data.results.length - 1;
+                  return (
+                    <MovieTile
+                      targetRef={isLast ? targetRef : null}
+                      key={`${recommendation.title}-${movieIndex}`}
+                      recommendation={recommendation}
+                    />
+                  );
+                })
+              );
+            })}
         </div>
       )}
+      {(hasPreviousPage && isFetchingMovieData) ||
+        (isEmptyData(movies?.pages.data) && <MovieSkeleton />)}
     </div>
   );
 };

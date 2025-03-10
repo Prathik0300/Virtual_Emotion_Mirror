@@ -1,7 +1,8 @@
 import { useFaceRecognitionController } from "@/src/components/face-recognition/controller/useFaceRecognitionController";
 import { dashboardContainer, contentContainer, title } from "./style";
 import dynamic from "next/dynamic";
-import { Button } from "@mui/material";
+import { Button, Tab, Tabs } from "@mui/material";
+import { useDashboard } from "@/src/hooks/modules/dashboard/useDashboard";
 
 const BarGraph = dynamic(() => import("@/src/components/dashboard/graph"), {
   ssr: false,
@@ -14,6 +15,7 @@ const FaceRecognition = dynamic(
   }
 );
 const Dashboard = () => {
+  const { tabValue, handleTabValueChange } = useDashboard();
   const {
     isCameraActive,
     videoRef,
@@ -21,18 +23,36 @@ const Dashboard = () => {
     canvasRef,
     modelRef,
     capturedImage,
+    showSkeleton,
+    isEmotionAnalysisCompleted,
     startCamera,
     stopCamera,
     captureImage,
     retakeImage,
+    uploadImage,
   } = useFaceRecognitionController();
+  console.log({ isEmotionAnalysisCompleted });
   const isRefMissing =
     !canvasRef.current || !modelRef.current || !videoRef.current;
   return (
     <div className={dashboardContainer}>
       <p className={title}>Dashboard</p>
+      <div>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabValueChange}
+          aria-label="dashboard graph tabs"
+        >
+          <Tab label="Daily" id="graph-tab-0" aria-controls="tabpanel-0" />
+          <Tab label="Monthly" id="graph-tab-1" aria-controls="tabpanel-1" />
+          <Tab label="Annually" id="graph-tab-2" aria-controls="tabpanel-2" />
+        </Tabs>
+      </div>
       <div className={contentContainer}>
-        <BarGraph />
+        <BarGraph
+          tabValue={tabValue}
+          isEmotionAnalysisCompleted={isEmotionAnalysisCompleted}
+        />
       </div>
       <div>
         <Button
@@ -53,12 +73,14 @@ const Dashboard = () => {
           isRefMissing={isRefMissing}
           isCameraActive={isCameraActive}
           isCameraLoading={isCameraLoading}
+          showSkeleton={showSkeleton}
           videoRef={videoRef}
           canvasRef={canvasRef}
           captureImage={captureImage}
           startCamera={startCamera}
           stopCamera={stopCamera}
           retakeImage={retakeImage}
+          uploadImage={uploadImage}
         />
       </div>
     </div>

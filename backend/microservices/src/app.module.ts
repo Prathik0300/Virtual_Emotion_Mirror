@@ -7,6 +7,11 @@ import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
 import { UserController } from './user/user.controller';
 import { ConfigModule } from '@nestjs/config';
+import { VemController } from './vem/vem.controller';
+import { VemModule } from './vem/vem.module';
+import { AnalysisModule } from './analysis/analysis.module';
+import { UtilsController } from './utils/utils.controller';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
@@ -14,8 +19,11 @@ import { ConfigModule } from '@nestjs/config';
     DatabaseModule,
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    VemModule,
+    AnalysisModule,
+    UtilsModule,
   ],
-  controllers: [AppController, AuthController, UserController],
+  controllers: [AppController, AuthController, UserController, VemController, UtilsController],
   providers: [AppService],
 })
 export class AppModule {}

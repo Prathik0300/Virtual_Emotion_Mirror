@@ -11,7 +11,7 @@ export const UserContextValue = createContext({});
 export const UserContextUpdater = createContext({});
 
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userProfile, setUserProfile] = useState([]);
+  const [userProfile, setUserProfile] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Check Cookie Data

@@ -7,8 +7,16 @@ import {
   recommendationContent,
 } from "./style";
 import SongRecommendation from "@/src/components/recommendations/songs";
+import { useGraphContext } from "@/src/hooks/useContext/useGraphContext";
 
 const Recommendation = () => {
+  const {
+    graphContextValues: {
+      dominantEmotion = "",
+      latestGraphData = {},
+      latestTransformedGraphData = [],
+    },
+  } = useGraphContext();
   return (
     <div className={recommendationContainer}>
       <p className={title}>Recommendations</p>
@@ -17,7 +25,11 @@ const Recommendation = () => {
           <MovieRecommendation />
         </div>
         <div className={songRecommendations}>
-          <SongRecommendation />
+          <SongRecommendation
+            latestTransformedGraphData={latestTransformedGraphData}
+            latestGraphData={latestGraphData}
+            dominantEmotion={dominantEmotion}
+          />
         </div>
       </div>
     </div>

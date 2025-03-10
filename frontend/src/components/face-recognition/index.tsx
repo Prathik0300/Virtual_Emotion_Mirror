@@ -23,11 +23,12 @@ const FaceRecognition = ({
   canvasRef,
   capturedImage,
   isCameraLoading,
+  showSkeleton,
   stopCamera,
   captureImage,
   retakeImage,
+  uploadImage,
 }: any) => {
-  const showSkeleton = isCameraLoading && !isCameraActive;
   console.log(">>> : ", {
     isCameraActive,
     isCameraLoading,
@@ -46,7 +47,11 @@ const FaceRecognition = ({
           >
             Retake
           </Button>
-          <Button variant="contained" className={classNames(btn, analyzeBtn)}>
+          <Button
+            variant="contained"
+            onClick={uploadImage}
+            className={classNames(btn, analyzeBtn)}
+          >
             Analyze
           </Button>
         </div>

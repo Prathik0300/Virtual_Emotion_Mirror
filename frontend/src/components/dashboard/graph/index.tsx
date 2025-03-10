@@ -1,16 +1,40 @@
 import { BarChart } from "@mui/x-charts/BarChart";
-import { barChartStyles } from "./style";
+import { graphContainer } from "./style";
+import { useGraph } from "@/src/hooks/modules/graph/useGraph";
+import LottieApp from "@/src/lib/Lottie";
+import graphLoader from "@/public/lottie/graphLoader.json";
 
-const BarGraph = () => {
+const BarGraph = ({ tabValue, isEmotionAnalysisCompleted }: any) => {
+  const { graphData, isLoading, isError } = useGraph({
+    tabValue,
+    isEmotionAnalysisCompleted,
+  });
+
+  if (isLoading) {
+    return (
+      <div className={graphContainer}>
+        <LottieApp animationData={graphLoader} height={"150px"} />
+      </div>
+    );
+  }
+
+  if (isError || !graphData) {
+    return <div className={graphContainer}>No data available</div>;
+  }
+
   return (
     <BarChart
       height={450}
-      xAxis={[{ scaleType: "band", data: ["group A", "group B", "group C"] }]}
+      dataset={graphData}
+      sx={{
+        overflowX: "scroll",
+      }}
+      xAxis={[{ scaleType: "band", dataKey: "dataKey" }]}
       series={[
-        { data: [4, 3, 5], label: "Happy" },
-        { data: [1, 6, 3], label: "Sad" },
-        { data: [2, 5, 6], label: "Angry" },
-        { data: [6, 2, 11], label: "Neutral" },
+        { dataKey: "happy", label: "Happy" },
+        { dataKey: "neutral", label: "Neutral" },
+        { dataKey: "sad", label: "Sad" },
+        { dataKey: "angry", label: "Angry" },
       ]}
     />
   );

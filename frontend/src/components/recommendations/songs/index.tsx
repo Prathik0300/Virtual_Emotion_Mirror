@@ -9,6 +9,7 @@ import {
   songNameContainer,
   songTile,
   songsLayout,
+  initialFetchContainer,
 } from "./style";
 import Image from "next/image";
 import { getBase64EncodedData, isEmptyData } from "@/src/utils/commonUtils";
@@ -16,6 +17,8 @@ import { useState } from "react";
 import SongDetails from "./more-details";
 import CustomDialog from "../../dialog";
 import SongSkeleton from "../../skeletons/songRecommendation";
+import LottieApp from "@/src/lib/Lottie";
+import recommendationLoader from "@/public/lottie/recommendationLoader.json";
 
 const SongTile = ({ recommendation, targetRef }) => {
   const [showSongDetails, setShowSongDetails] = useState(false);
@@ -64,13 +67,16 @@ const SongRecommendation = () => {
     targetRef,
     hasPreviousPage,
     isFetchingSongData,
-  } = useSongRecommender({});
+  } = useSongRecommender();
+
   return (
     <div className={songContainer}>
       <p className={songContainerTitle}>Songs</p>
       <div className={songsLayout}>
-        {!hasPreviousPage && isFetchingSongData ? (
-          <SongSkeleton />
+        {isFetchingSongData && !hasPreviousPage ? (
+          <div className={initialFetchContainer}>
+            <LottieApp animationData={recommendationLoader} height={"80px"} />
+          </div>
         ) : (
           <div ref={songContainerRef} className={songSuggestionContainer}>
             {!isEmptyData(songs?.pages) &&
@@ -95,6 +101,7 @@ const SongRecommendation = () => {
               })}
           </div>
         )}
+
         {hasPreviousPage && isFetchingSongData && <SongSkeleton />}
       </div>
     </div>

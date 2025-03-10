@@ -16,10 +16,12 @@ export const useSignup = () => {
     validateInput,
   } = useForm();
   const { triggerErrorToast, triggerSuccessToast } = useToastMessage();
-  const { push } = useRouter();
+  const { replace } = useRouter();
 
   const onSignup = async () => {
-    if (isError) return triggerErrorToast("Invalid data");
+    if (isError) {
+      return triggerErrorToast("Invalid data");
+    }
     try {
       const signupResponse = await handleSignup({
         firstName,
@@ -29,7 +31,7 @@ export const useSignup = () => {
       });
       if (signupResponse?.success) {
         triggerSuccessToast("Successfully created account");
-        push("/login");
+        replace("/login");
       } else {
         triggerErrorToast(signupResponse?.message);
       }
