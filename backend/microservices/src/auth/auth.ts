@@ -28,7 +28,6 @@ export class AuthService {
         `User with email ${userSignupDto.emailId} already exists!`,
       );
     } catch (error) {
-      console.log({ error });
       throw new Exception(
         error?.response?.message,
         error?.response?.statusCode,
@@ -44,7 +43,6 @@ export class AuthService {
           userLoginDto.password,
           user.password,
         );
-        console.log({ isValidPassword });
         if (isValidPassword) {
           const transformedUser = plainToClass(UserAuthResponseDto, {
             ...user,

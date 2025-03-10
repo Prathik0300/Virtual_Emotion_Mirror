@@ -1,58 +1,115 @@
-import CustomModal from "../modal";
-import { useFaceRecognitionController } from "./controller/useFaceRecognitionController";
-import { videoContainer } from "./styles";
+import { Button } from "@mui/material";
+import CustomDialog from "../dialog";
+import VideoSkeleton from "../skeletons/video";
+import {
+  canvasStyles,
+  videoContainer,
+  videoStyles,
+  captureBtn,
+  faceRecognitionContainer,
+  imageCaptured,
+  imageContainer,
+  btnContainer,
+  btn,
+  retakeBtn,
+  analyzeBtn,
+} from "./styles";
+import Image from "next/image";
+import classNames from "classnames";
 
-const FaceRecognition = () => {
-  const { isCameraActive, videoRef, canvasRef, startCamera, stopCamera } =
-    useFaceRecognitionController();
+const FaceRecognition = ({
+  isCameraActive,
+  videoRef,
+  canvasRef,
+  capturedImage,
+  isCameraLoading,
+  showSkeleton,
+  stopCamera,
+  captureImage,
+  retakeImage,
+  uploadImage,
+}: any) => {
+
+
+  const renderBtn = () => {
+    if (capturedImage) {
+      return (
+        <div className={btnContainer}>
+          <Button
+            variant="outlined"
+            onClick={retakeImage}
+            className={classNames(btn, retakeBtn)}
+          >
+            Retake
+          </Button>
+          <Button
+            variant="contained"
+            onClick={uploadImage}
+            className={classNames(btn, analyzeBtn)}
+          >
+            Analyze
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <Button variant="contained" className={captureBtn} onClick={captureImage}>
+        Capture
+      </Button>
+    );
+  };
+
+  const renderComponent = () => {
+    if (capturedImage) {
+      return (
+        <div className={imageContainer}>
+          <Image
+            src={capturedImage}
+            className={imageCaptured}
+            layout="fill"
+            alt="captured image"
+          />
+        </div>
+      );
+    }
+
+    if (showSkeleton) {
+      return <VideoSkeleton />;
+    }
+  };
   return (
     <>
-      <button
-        onClick={isCameraActive ? stopCamera : startCamera}
-        style={{
-          padding: "10px 20px",
-          marginBottom: "10px",
-          backgroundColor: isCameraActive ? "red" : "green",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
+      <CustomDialog
+        open={isCameraLoading}
+        onCloseHandler={stopCamera}
+        title="Analyze my Emotion"
+        dwebStyles={{
+          maxHeight: "580px",
+          height: "100%",
+        }}
+        mwebStyles={{
+          maxHeight: "420px",
+          height: "100%",
         }}
       >
-        {isCameraActive ? "Stop Camera" : "Start Camera"}
-      </button>
-      <CustomModal open={isCameraActive} onCloseHandler={stopCamera}>
-        <>hello</>
-      </CustomModal>
-      {/* <CustomModal open={isCameraActive} onCloseHandler={stopCamera}> */}
-      <div className={videoContainer(isCameraActive)}>
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "500px",
-            height: "500px",
-            display: isCameraActive ? "block" : "none",
-            zIndex: 1,
-          }}
-        ></video>
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "500px",
-            height: "500px",
-            display: isCameraActive ? "block" : "none",
-            zIndex: 2,
-          }}
-        ></canvas>
-      </div>
-      {/* </CustomModal> */}
+        <div className={faceRecognitionContainer}>
+          {renderComponent()}
+          <div className={videoContainer}>
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              className={videoStyles(isCameraActive)}
+            ></video>
+            <canvas
+              ref={canvasRef}
+              className={canvasStyles(isCameraActive)}
+            ></canvas>
+          </div>
+          {renderBtn()}
+        </div>
+      </CustomDialog>
     </>
   );
 };

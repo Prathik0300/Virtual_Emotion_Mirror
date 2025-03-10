@@ -9,68 +9,127 @@ import {
   ratingContainer,
   movieTitle,
   movieTileContentContainer,
+  initialFetchContainer,
 } from "./style";
 import { useMovieRecommender } from "@/src/hooks/modules/recommendations/useMovieRecommender";
 import Image from "next/image";
-import { isEmptyData } from "@/src/utils/commonUtils";
+import { getBase64EncodedData, isEmptyData } from "@/src/utils/commonUtils";
 import RatingIcon from "@/public/rating.svg";
 import { useState } from "react";
+import CustomDialog from "../../dialog";
+import MovieDetails from "./more-details";
+import MovieSkeleton from "../../skeletons/movieRecommendation";
+import LottieApp from "@/src/lib/Lottie";
+import recommendationLoader from "@/public/lottie/recommendationLoader.json";
 
-const MovieTile = ({ recommendation }) => {
+const MovieTile = ({ recommendation, targetRef }) => {
   const [isImageError, setIsImageError] = useState(false);
+  const [showMovieDetails, setShowMovieDetails] = useState(false);
+  const imagePlaceholder = getBase64EncodedData(110, 150);
+
   if (isEmptyData(recommendation?.imageurl)) {
     return;
   }
+
+  const movieTileClickHandler = () => {
+    setShowMovieDetails((prev) => !prev);
+  };
 
   const handleError = () => {
     setIsImageError(true);
   };
 
   return (
-    <div className={movieTileContainer}>
-      <Image
-        className={movieTile}
-        src={
-          isImageError
-            ? "/no_image_placeholder.png"
-            : recommendation.imageurl[0]
-        }
-        width={110}
-        height={150}
-        layout="fixed"
-        alt={recommendation.title}
-        onError={handleError}
-      />
-      <div className={movieTileContentContainer}>
-        {recommendation.imdbrating && (
-          <span className={ratingContainer}>
-            <Image
-              src={RatingIcon}
-              width={12}
-              height={12}
-              alt="IMDB Rating icon"
-              className={ratingIcon}
-            />
-            {recommendation.imdbrating}
-          </span>
-        )}
-        <p className={movieTitle}>{recommendation.title}</p>
+    <>
+      <div ref={targetRef} className={movieTileContainer}>
+        <Image
+          onClick={movieTileClickHandler}
+          className={movieTile}
+          src={
+            isImageError
+              ? "/no_image_placeholder.png"
+              : recommendation.imageurl[0]
+          }
+          width={110}
+          height={150}
+          layout="fixed"
+          alt={recommendation.title}
+          onError={handleError}
+          placeholder="blur"
+          blurDataURL={imagePlaceholder}
+        />
+        <div className={movieTileContentContainer}>
+          {recommendation.imdbrating && (
+            <span className={ratingContainer}>
+              <Image
+                src={RatingIcon}
+                width={12}
+                height={12}
+                alt="IMDB Rating icon"
+                className={ratingIcon}
+              />
+              {recommendation.imdbrating}
+            </span>
+          )}
+          <p className={movieTitle}>{recommendation.title}</p>
+        </div>
       </div>
-    </div>
+
+      <CustomDialog
+        open={showMovieDetails}
+        onCloseHandler={movieTileClickHandler}
+        title={recommendation.title}
+      >
+        <MovieDetails recommendation={recommendation} />
+      </CustomDialog>
+    </>
   );
 };
 
-const MovieRecommendation = ({ genre = "comedy" }) => {
-  const { results } = useMovieRecommender({ genre });
-  console.log({ results });
+const MovieRecommendation = () => {
+  const {
+    movies,
+    hasPreviousPage,
+    isFetchingMovieData,
+    movieContainerRef,
+    targetRef,
+  } = useMovieRecommender();
+  console.log({ movies });
   return (
     <div className={movieContainer}>
       <p className={movieContainerTitle}>Movies</p>
-      <div className={movieSuggestionContainer}>
-        {results.map((recommendation) => {
-          return <MovieTile recommendation={recommendation} />;
-        })}
-      </div>
+      {!hasPreviousPage && isFetchingMovieData ? (
+        <div id="id" className={initialFetchContainer}>
+          <LottieApp animationData={recommendationLoader} height={"80px"} />
+        </div>
+      ) : (
+        <>
+          {!isEmptyData(movies?.pages[0]?.data?.results) && (
+            <div ref={movieContainerRef} className={movieSuggestionContainer}>
+              {!isEmptyData(movies?.pages) &&
+                movies?.pages.map((page, pageIndex) => {
+                  return (
+                    !isEmptyData(page?.data?.results) &&
+                    page?.data?.results?.map((recommendation, movieIndex) => {
+                      const isLast =
+                        pageIndex === movies.pages.length - 1 &&
+                        movieIndex === page.data.results.length - 1;
+                      return (
+                        <MovieTile
+                          targetRef={isLast ? targetRef : null}
+                          key={`${recommendation.title}-${movieIndex}`}
+                          recommendation={recommendation}
+                        />
+                      );
+                    })
+                  );
+                })}
+            </div>
+          )}
+        </>
+      )}
+      {(hasPreviousPage && isFetchingMovieData) ||
+        (isEmptyData(movies?.pages[0].data) && <MovieSkeleton />)}
     </div>
   );
 };

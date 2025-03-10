@@ -2,7 +2,10 @@ import { MOVIE_RECOMMENDER_API_CONFIG } from "../constants/config";
 import { request } from "../lib/Axios";
 import { isEmptyData } from "../utils/commonUtils";
 
-export const getMovieRecommendation = async ({ genre }: { genre: string }) => {
+export const getMovieRecommendation = async ({
+  genre = "comedy",
+  pageParam = 0,
+}) => {
   try {
     const recommendationList = await request(
       process.env.NEXT_PUBLIC_MOVIE_RECOMMENDATION_BASE_URL
@@ -13,18 +16,16 @@ export const getMovieRecommendation = async ({ genre }: { genre: string }) => {
       },
       params: {
         ...MOVIE_RECOMMENDER_API_CONFIG,
+        page: pageParam + 1,
         ...(isEmptyData(genre) ? { genre: "comedy" } : { genre: genre }),
       },
     });
     return {
-      success: true,
+      nextOffset: pageParam + 1,
+      prevOffset: pageParam - 1 > 0 ? pageParam - 1 : 0,
       data: recommendationList?.data,
     };
-  } catch (error) {
-    return {
-      success: false,
-      message: error?.message || "",
-      data: [],
-    };
+  } catch {
+    return { nextOffset: null, prevOffset: null, data: [] };
   }
 };

@@ -1,8 +1,8 @@
 const nextConfig = {
   /* config options here */
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
-    domains: ["m.media-amazon.com"],
+    domains: ["m.media-amazon.com", "i.scdn.co"],
   },
 };
 

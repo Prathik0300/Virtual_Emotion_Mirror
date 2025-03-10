@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { PERMISSION_STATUS } from "../constants/enums";
+import { MONTH_MAP, PERMISSION_STATUS } from "../constants/enums";
 
 export const isLoginDateExpired = (
   loggedInDate: Date,
@@ -16,15 +16,27 @@ export const isLoginDateExpired = (
 };
 
 export const isEmptyData = (dataStructure: any) => {
-  if (Array.isArray(dataStructure) && dataStructure.length === 0) return true;
+  if (dataStructure === "undefined" || dataStructure === "null") {
+    return true;
+  }
+  if (Array.isArray(dataStructure) && dataStructure.length === 0) {
+    return true;
+  }
   if (
     typeof dataStructure === "object" &&
     Object.keys(dataStructure).length === 0
-  )
+  ) {
     return true;
-  if (typeof dataStructure === "string" && !dataStructure) return true;
-  if (typeof dataStructure === "number") return false;
-  if (!dataStructure) return true;
+  }
+  if (typeof dataStructure === "string" && !dataStructure) {
+    return true;
+  }
+  if (!dataStructure) {
+    return true;
+  }
+  if (typeof dataStructure === "undefined" || dataStructure === null) {
+    return true;
+  }
 
   return false;
 };
@@ -41,16 +53,55 @@ export const askForCameraPermission = async () => {
     });
 
     if (permissionStatus.state === PERMISSION_STATUS.GRANTED) {
-      console.log("permission granted");
     } else if (permissionStatus.state === PERMISSION_STATUS.PROMPT) {
-      console.log("Prompting for camera permission!");
       await navigator.mediaDevices.getUserMedia({ video: true });
-      alert("Permission granted!");
+      getSuccessToast("Permission granted!");
     } else if (permissionStatus.state === PERMISSION_STATUS.DENIED) {
       console.warn("Camera Permission denied!");
-      alert("Camera access denied!");
+      getErrorToast("Camera access denied!");
     }
-  } catch (err) {
-    console.log(`Error accessing the camera : ${err}`);
+  } catch {
+    getErrorToast("Error accessing the camera");
+  }
+};
+
+export const getBase64EncodedData = (width: number, height: number) => {
+  return `data:image/svg+xml;base64,${Buffer.from(
+    `
+  <svg width=${width} height=${height} xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="#E0E0E0" rx="5" ry="5" />
+  </svg>
+`
+  ).toString("base64")}`;
+};
+
+const addSuffixToDate = (date: number) => {
+  let suffix = "th";
+
+  if (date % 10 === 1 && date !== 11) {
+    suffix = "st";
+  } else if (date % 10 === 2 && date !== 12) {
+    suffix = "nd";
+  } else if (date % 10 === 3 && date !== 13) {
+    suffix = "rd";
+  }
+
+  return `${date}${suffix}`;
+};
+export const generateGraphDataKey = (dataKey: string) => {
+  if (isEmptyData(dataKey)) {
+    return "";
+  }
+  const dataKeyArr = dataKey.trim().split("/");
+  if (dataKeyArr.length === 3) {
+    const month = MONTH_MAP[dataKeyArr[1]];
+    return `${addSuffixToDate(parseInt(dataKeyArr[0], 10))} ${month}, ${
+      dataKeyArr[2]
+    }`;
+  } else if (dataKeyArr.length === 2) {
+    const month = MONTH_MAP[dataKeyArr[0]];
+    return `${month}, ${dataKeyArr[1]}`;
+  } else if (dataKeyArr.length === 1) {
+    return dataKeyArr[0];
   }
 };

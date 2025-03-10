@@ -11,13 +11,12 @@ export const UserContextValue = createContext({});
 export const UserContextUpdater = createContext({});
 
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userProfile, setUserProfile] = useState([]);
+  const [userProfile, setUserProfile] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Check Cookie Data
   const access_token = useState(() => {
     const token = getCookieData(ACCESS_TOKEN);
-    console.log({ token });
     if (token) {
       return token;
     }

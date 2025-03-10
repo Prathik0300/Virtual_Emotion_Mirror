@@ -4,9 +4,9 @@ export const setCookieData = (name: string, value: string, options?: any) => {
   Cookies.set(name, value, options);
 };
 
-export const getCookieData = (name: string) => {
+export const getCookieData = (name: string): string => {
   try {
-    return Cookies.get(name);
+    return Cookies.get(name) as string;
   } catch {
     return "";
   }

@@ -12,7 +12,6 @@ async function bootstrap() {
     origin: 'http://localhost:3001',
     credentials: true,
   });
-  console.log(process.env.JWT_SECRET);
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

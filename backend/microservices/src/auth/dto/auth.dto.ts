@@ -37,6 +37,9 @@ export class UserAuthResponseDto {
   @Expose()
   emailId: string;
 
+  @Expose()
+  userId: string;
+
   @Exclude()
   password: string;
 }

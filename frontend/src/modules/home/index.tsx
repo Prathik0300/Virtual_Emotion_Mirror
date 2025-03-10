@@ -1,4 +1,3 @@
-import Dashboard from "@/src/modules/dashboard";
 import Recommendation from "@/src/modules/recommendations";
 import dynamic from "next/dynamic";
 import {
@@ -6,11 +5,12 @@ import {
   dashboardContainerWrapper,
   recommendationContainerWrapper,
 } from "./style";
+import DashboardSkeleton from "@/src/components/skeletons/dashboard";
 
-const FaceRecognition = dynamic(
-  () => import("@/src/components/face-recognition"),
-  { ssr: false }
-);
+const Dashboard = dynamic(() => import("@/src/modules/dashboard"), {
+  ssr: false,
+  loading: () => <DashboardSkeleton />,
+});
 
 const Home = () => {
   return (
@@ -21,8 +21,6 @@ const Home = () => {
       <div className={recommendationContainerWrapper}>
         <Recommendation />
       </div>
-
-      {/* <FaceRecognition /> */}
     </div>
   );
 };

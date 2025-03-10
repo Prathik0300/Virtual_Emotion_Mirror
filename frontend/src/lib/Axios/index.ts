@@ -35,7 +35,10 @@ class Request {
       (config) => {
         const token = this.getToken();
         if (token) {
-          config.headers["Authorization"] = `Bearer ${token}`;
+          config.headers = {
+            Authorization: `Bearer ${token}`,
+            ...config.headers,
+          };
         }
         return config;
       },
@@ -46,7 +49,6 @@ class Request {
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        console.log("axios inter > ", { response });
         return response;
       },
       (error) => {
@@ -54,7 +56,7 @@ class Request {
           error?.response?.data?.message.map((err: string) =>
             getErrorToast(err)
           );
-        } else {
+        } else if (error?.response?.statusText) {
           getErrorToast(error.response.statusText);
         }
         return error;
@@ -101,6 +103,9 @@ class Request {
   }
 }
 
-export const request = (baseUrl?: string) => {
-  return new Request(baseUrl);
+export const request = (
+  baseUrl?: string,
+  defaultHeaders?: Record<string, string>
+) => {
+  return new Request(baseUrl, defaultHeaders);
 };

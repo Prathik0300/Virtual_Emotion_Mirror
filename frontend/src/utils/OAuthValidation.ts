@@ -22,8 +22,21 @@ export const OAuthValidate = async (user: any) => {
   }
 };
 
+export const formatResponse = (responseData: any) => {
+  return {
+    userId: responseData?.["userId"] || responseData?.["id"],
+    email: responseData["email"] || responseData?.["emailId"],
+    family_name: responseData?.["lastName"] || responseData?.["family_name"],
+    given_name: responseData?.["firstName"] || responseData?.["given_name"],
+    verified_email: responseData["email"],
+    last_login: new Date(),
+    expires_in: (responseData?.expires_in || 3600) * 1000,
+    access_token: responseData?.["access_token"],
+  };
+};
 export const setLoginData = (profile: any) => {
   setLocalStorageData(VEM_USER, {
+    userId: profile["userId"],
     email: profile["email"],
     family_name: profile["lastName"],
     given_name: profile["firstName"],
@@ -48,19 +61,7 @@ export const setLoginData = (profile: any) => {
 };
 
 export const setOAuthLoginData = (profile: any) => {
-  setLocalStorageData(VEM_USER, {
-    access_token: profile["access_token"],
-    token_type: profile["token_type"],
-    email: profile["email"],
-    family_name: profile["family_name"],
-    given_name: profile["given_name"],
-    id: profile["id"],
-    name: profile["name"],
-    picture: profile["picture"],
-    verified_email: profile["verified_email"],
-    last_login: new Date(),
-    expires_in: (profile?.expires_in || 3600) * 1000,
-  });
+  setLocalStorageData(VEM_USER, profile);
 
   setCookieData(ACCESS_TOKEN, profile["access_token"], {
     expires: 30,
