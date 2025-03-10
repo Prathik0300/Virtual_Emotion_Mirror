@@ -17,6 +17,7 @@ export const useGraph = ({ tabValue, isEmotionAnalysisCompleted }: any) => {
       setDominantEmotion,
     },
   } = useGraphContext();
+  
   const {
     data: graphData,
     isLoading,
@@ -43,14 +44,13 @@ export const useGraph = ({ tabValue, isEmotionAnalysisCompleted }: any) => {
       return transformedData;
     },
     refetchOnMount: true,
-    // enabled: !!userProfile.email && !!accessToken,
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && typeof setLatestTransformedGraphData === "function") {
       setLatestTransformedGraphData(graphData);
     }
-  }, [isSuccess, graphData]);
+  }, [isSuccess, graphData, setLatestTransformedGraphData]);
 
   useEffect(() => {
     if (isEmotionAnalysisCompleted) {

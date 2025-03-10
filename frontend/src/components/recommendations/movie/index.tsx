@@ -94,38 +94,42 @@ const MovieRecommendation = () => {
     movieContainerRef,
     targetRef,
   } = useMovieRecommender();
-
+  console.log({ movies });
   return (
     <div className={movieContainer}>
       <p className={movieContainerTitle}>Movies</p>
       {!hasPreviousPage && isFetchingMovieData ? (
-        <div className={initialFetchContainer}>
+        <div id="id" className={initialFetchContainer}>
           <LottieApp animationData={recommendationLoader} height={"80px"} />
         </div>
       ) : (
-        <div ref={movieContainerRef} className={movieSuggestionContainer}>
-          {!isEmptyData(movies?.pages) &&
-            movies?.pages.map((page, pageIndex) => {
-              return (
-                !isEmptyData(page?.data?.results) &&
-                page?.data?.results?.map((recommendation, movieIndex) => {
-                  const isLast =
-                    pageIndex === movies.pages.length - 1 &&
-                    movieIndex === page.data.results.length - 1;
+        <>
+          {!isEmptyData(movies?.pages[0]?.data?.results) && (
+            <div ref={movieContainerRef} className={movieSuggestionContainer}>
+              {!isEmptyData(movies?.pages) &&
+                movies?.pages.map((page, pageIndex) => {
                   return (
-                    <MovieTile
-                      targetRef={isLast ? targetRef : null}
-                      key={`${recommendation.title}-${movieIndex}`}
-                      recommendation={recommendation}
-                    />
+                    !isEmptyData(page?.data?.results) &&
+                    page?.data?.results?.map((recommendation, movieIndex) => {
+                      const isLast =
+                        pageIndex === movies.pages.length - 1 &&
+                        movieIndex === page.data.results.length - 1;
+                      return (
+                        <MovieTile
+                          targetRef={isLast ? targetRef : null}
+                          key={`${recommendation.title}-${movieIndex}`}
+                          recommendation={recommendation}
+                        />
+                      );
+                    })
                   );
-                })
-              );
-            })}
-        </div>
+                })}
+            </div>
+          )}
+        </>
       )}
       {(hasPreviousPage && isFetchingMovieData) ||
-        (isEmptyData(movies?.pages.data) && <MovieSkeleton />)}
+        (isEmptyData(movies?.pages[0].data) && <MovieSkeleton />)}
     </div>
   );
 };

@@ -14,6 +14,7 @@ export const movieContainer = css`
   border-radius: 8px;
   overflow: hidden;
   min-height: 269px;
+  /* max-height: 269px; */
 `;
 
 export const movieContainerTitle = css`
