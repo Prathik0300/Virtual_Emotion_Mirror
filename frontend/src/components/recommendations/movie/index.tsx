@@ -94,7 +94,6 @@ const MovieRecommendation = () => {
     movieContainerRef,
     targetRef,
   } = useMovieRecommender();
-  console.log({ movies });
   return (
     <div className={movieContainer}>
       <p className={movieContainerTitle}>Movies</p>

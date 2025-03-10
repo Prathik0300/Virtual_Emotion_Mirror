@@ -21,11 +21,6 @@ def convert_to_native_types(obj):
 
 def enforce_detection(image_path):
     try:
-        # detected_face = DeepFace.extract_faces(image_path, detector_backend="opencv", enforce_detection=True)
-        
-        # if detected_face is None:
-        #     return {"success": False, "message": "No face detected!"}
-        
         analysis_result = DeepFace.analyze(image_path, actions=["emotion"])
         analysis_result = convert_to_native_types(analysis_result)
         return {"success": True, "message": "Successfully analyzed!", "analysis": analysis_result}
@@ -53,16 +48,12 @@ def analyze():
     
     try:
         file.save(file_path)
-        print(f"file saved at : {file_path}")
     except Exception as error:
-        print(">>>> ERROR : ", error)
         return jsonify({"success": False, "message": f"Error saving file: {str(error)}"}), 500
     
-    print("file >>>> : ",file.filename);
     thread = threading.Thread(target=analyze_image, args=(file_path,))
     thread.start()
     res = result_queue.get()
-    print("RESSSSS >>> : ", res);
     return jsonify(res), 200
     
 if __name__ == "__main__":
