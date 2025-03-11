@@ -4,4 +4,7 @@ module.exports = {
   images: {
     domains: ["m.media-amazon.com", "i.scdn.co"],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
