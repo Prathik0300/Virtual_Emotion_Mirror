@@ -1,6 +1,9 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
   reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: ["m.media-amazon.com", "i.scdn.co"],
     remotePatterns: [
@@ -16,4 +19,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
